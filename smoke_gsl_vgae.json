@@ -1,0 +1,29 @@
+{
+  "args": {
+    "dataset": "cora",
+    "method": "vgae_gsl",
+    "seeds": 1,
+    "seed0": 0,
+    "budget": 100,
+    "n_targets": 200,
+    "model_type": "gcn",
+    "out": "C:\\Users\\adity\\EdgeQuery\\smoke_gsl_vgae.json"
+  },
+  "results": [
+    {
+      "seed": 0,
+      "method": "vgae_gsl",
+      "budget": 100,
+      "edges_added": 100,
+      "true_edges": 37,
+      "precision": 0.37,
+      "lp_obs": 0.195,
+      "lp_aug": 0.21,
+      "lp_gain": 0.014999999999999986,
+      "gcn_obs": 0.65,
+      "gcn_aug": 0.65,
+      "gcn_gain": 0.0,
+      "time": 53.62228280000272
+    }
+  ]
+}

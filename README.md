@@ -2,7 +2,7 @@
 
 **Joint Active Edge and Label Acquisition for Node Classification on Partially Observed Graphs**
 
-> When a graph is only partially observed, should you spend your budget querying missing edges or labelling nodes? EdgeQuery introduces a unified framework where each oracle call reveals either an edge or a label, and an LP-probe scorer decides which action maximises downstream classification accuracy.
+> When a graph is only partially observed, should you spend your budget querying missing edges or labelling nodes? ActiveGraph introduces a unified framework where each oracle call reveals either an edge or a label, and an LP-probe scorer decides which action maximises downstream classification accuracy.
 
 ## Key Findings
 

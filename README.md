@@ -1,4 +1,4 @@
-# EdgeQuery
+# ActiveGraph
 
 **Joint Active Edge and Label Acquisition for Node Classification on Partially Observed Graphs**
 

@@ -1,0 +1,277 @@
+<title>EdgeQuery Progress Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
+<style>
+/* Layout: single reading column; each finding is a headline sentence, one figure, one caption. */
+:root{
+  --bg:#f6f7f8; --surface:#ffffff; --fg:#16202a; --muted:#5a6772; --rule:#d9dee3;
+  --accent:#0b6e8a; --accent-soft:#9cc9d6; --base:#8d98a2; --base-soft:#c3cad0;
+  --warn:#b4570a; --warn-soft:#f3dcc6; --ok:#2f7d4f;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10171d; --surface:#17212a; --fg:#e6ebef; --muted:#9aa7b2; --rule:#2b3945;
+  --accent:#4fb3d0; --accent-soft:#2c5a69; --base:#7d8a95; --base-soft:#3a4854;
+  --warn:#e59a55; --warn-soft:#4a3320; --ok:#6cc08e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171d; --surface:#17212a; --fg:#e6ebef; --muted:#9aa7b2; --rule:#2b3945;
+  --accent:#4fb3d0; --accent-soft:#2c5a69; --base:#7d8a95; --base-soft:#3a4854;
+  --warn:#e59a55; --warn-soft:#4a3320; --ok:#6cc08e; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--sans);
+  padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2{font-family:var(--serif);font-weight:600;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15}
+h2{font-size:clamp(21px,3.4vw,26px);line-height:1.25}
+p{margin:0}
+.lede{color:var(--muted);max-width:62ch;margin-top:12px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:16px;min-width:0}
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px;min-width:0;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:520px}
+.cap{color:var(--muted);font-size:14px;max-width:70ch}
+.cap b{color:var(--fg);font-weight:600}
+text{font-family:var(--sans);fill:var(--fg)}
+.t-muted{fill:var(--muted)} .t-mono{font-family:var(--mono)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{font:500 13px var(--sans);background:transparent;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:6px 12px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
+th{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.num,th.num{text-align:right}
+.pill{display:inline-block;font:500 12px var(--mono);padding:2px 8px;border-radius:3px}
+.p-done{background:var(--accent-soft);color:var(--fg)} .p-next{background:var(--warn-soft);color:var(--fg)} .p-later{border:1px solid var(--rule);color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.note{border-left:3px solid var(--warn);padding:4px 0 4px 14px;max-width:70ch}
+.road{display:flex;flex-direction:column;gap:0}
+.road > div{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--rule)}
+.road > div:first-child{border-top:0}
+@media (max-width:520px){.road > div{grid-template-columns:1fr;gap:6px}}
+.road h3{font:600 15px var(--sans);margin:0 0 2px}
+.road p{color:var(--muted);font-size:14px}
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">BTP progress review</div>
+  <h1>Choosing which links to check, so a chosen set of nodes gets classified correctly</h1>
+  <p class="lede">Part of a network is hidden and each check costs something. This page shows what has been built, what the experiments found, one result that did not transfer to real data, and where the project goes next.</p>
+</header>
+
+<section>
+  <div class="eyebrow">The setup</div>
+  <h2>Each query asks one yes/no question, and the answer feeds the classifier</h2>
+  <div class="fig">
+    <svg viewBox="0 0 800 210" role="img" aria-label="Loop: observed graph, choose a pair, ask the oracle, update graph, classify targets, repeat until budget is spent">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+      <g id="loop"></g>
+    </svg>
+  </div>
+  <p class="cap">Hidden network, 15% of links visible, a few labelled nodes, 15 <b>target</b> nodes whose labels we want. A budget of B queries. Success is accuracy on the targets after the budget is spent. Strategies differ only in which pair they pick next.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Finding 1 · synthetic graphs, 30 seeds</div>
+  <h2>Finding more real links did not improve classification</h2>
+  <div class="fig"><svg id="f1" viewBox="0 0 800 330" role="img" aria-label="Paired bars per strategy: real links found and accuracy gain after 200 queries"></svg></div>
+  <p class="cap">After 200 queries at 15% labelled nodes. Left: real links found. Right: accuracy gain on the target nodes. Common neighbours finds the most links (9.9) and gains 0.031. <b>Value on targets finds fewer (7.9) and gains 0.227.</b> A link can be real and still useless, for example when it joins nodes no label can reach.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Finding 2 · accuracy against budget</div>
+  <h2>The value strategy keeps improving past 200 queries, with falling returns</h2>
+  <div class="tabs" role="group" aria-label="Label fraction">
+    <button type="button" data-tf="0.15" aria-pressed="true">15% nodes labelled</button>
+    <button type="button" data-tf="0.4" aria-pressed="false">40% nodes labelled</button>
+  </div>
+  <div class="fig"><svg id="f2" viewBox="0 0 800 380" role="img" aria-label="Accuracy gain on targets versus number of queries, four strategies"></svg></div>
+  <p class="cap">Mean accuracy gain on the 15 targets (original seeds 0–29). Gain added per extra 100 queries at 15% labels: +0.13, +0.09, +0.05, +0.02. No strategy closes 75% of the gap to full-graph accuracy within 400 queries.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Finding 3 · what drives the gain</div>
+  <h2>Aiming at the targets gives most of the gain; asking one at a time adds a smaller one</h2>
+  <div class="fig"><svg id="f3" viewBox="0 0 800 270" role="img" aria-label="Accuracy gain after 200 queries for five configurations"></svg></div>
+  <p class="cap">Accuracy gain at 200 queries, 15% labels. Targeting the objective at the 15 targets instead of all unlabelled nodes adds about <b>+0.12</b>. Choosing adaptively instead of all at once adds about <b>+0.05</b>. The decomposition has one caveat: the target version also restricts its shortlist to pairs that can affect the targets, and that effect is not yet separated from the objective.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Verification</div>
+  <h2>Checks run so far</h2>
+  <div class="grid2">
+    <div class="fig"><p><b>Fresh seeds.</b> Scorer tuned on seeds 0–2. Repeated on unseen seeds 100–129; results within about 0.03.</p></div>
+    <div class="fig"><p><b>No label leakage.</b> Randomising every non-training label changed none of the queries any strategy chose.</p></div>
+    <div class="fig"><p><b>Three ways of hiding links.</b> Random, targets-hidden, hub-biased. Value closes 0.46–0.59 of the gap, best heuristic at most 0.13.</p></div>
+    <div class="fig"><p><b>Exact reproduction.</b> Re-running earlier experiments reproduces them with difference 0. Paired t-test, Wilcoxon, bootstrap CI and Holm correction used.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Real data · Cora, 3-seed pilot</div>
+  <h2>On Cora the effect did not show up, and the first reason is scale</h2>
+  <div class="fig" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Strategy</th><th class="num">Real links found</th><th class="num">LP gain</th><th class="num">GCN gain</th><th class="num">Targets reached</th></tr></thead>
+      <tbody>
+        <tr><td>Random</td><td class="num">6.3</td><td class="num">+0.000</td><td class="num">+0.000</td><td class="num">0.07</td></tr>
+        <tr><td>Common neighbours</td><td class="num">21.0</td><td class="num">+0.000</td><td class="num">−0.007</td><td class="num">0.07</td></tr>
+        <tr><td>Max-degree</td><td class="num">45.0</td><td class="num">+0.013</td><td class="num">+0.000</td><td class="num">0.12</td></tr>
+        <tr><td>Link predictor only</td><td class="num">46.0</td><td class="num">+0.013</td><td class="num">−0.013</td><td class="num">0.12</td></tr>
+        <tr><td><b>Value, targets</b></td><td class="num">41.7</td><td class="num">+0.027</td><td class="num">+0.000</td><td class="num">0.13</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">200 queries, 5 labelled papers per class, 50 targets, 15% of links visible. No difference is significant with 3 seeds. A longer test (1,000 queries, one seed) and five further seeds at 200 queries were inconsistent: value led on two seeds, tied on two and trailed on one.</p>
+
+  <div class="grid2">
+    <div class="fig"><svg id="f4" viewBox="0 0 400 300" role="img" aria-label="Cora visible fraction versus isolated nodes"></svg></div>
+    <div class="fig"><svg id="f5" viewBox="0 0 400 300" role="img" aria-label="Real links found as a share of visible links, synthetic versus Cora"></svg></div>
+  </div>
+  <p class="cap"><b>Left:</b> at 15% visibility, 1,642 of Cora's 2,708 nodes have no visible link at all. <b>Right:</b> 200 queries add about 28% to the visible links in the synthetic setup but only about 5% in Cora, so there is little for any classifier to use. The classifier based on node text (GCN) also already gets most of the accuracy from features, which leaves little room.</p>
+  <div class="note"><p><b>Other findings from this pilot.</b> The pool of candidate pairs recovers only 33% of hidden links, and the link-probability model is weak (AUC about 0.63). A 400-node Cora subgraph left the GCN already at its ceiling, so it was not a useful test either.</p></div>
+</section>
+
+<section>
+  <div class="eyebrow">Where this is going</div>
+  <h2>The claim is fixed in advance, and the next step is a fair real-data test</h2>
+  <div class="road">
+    <div><span class="pill p-done">Done</span><div><h3>Synthetic benchmark and the main comparison</h3><p>Eight strategies, static and adaptive, 30 original and 30 fresh seeds, leakage and reproduction checks.</p></div></div>
+    <div><span class="pill p-done">Done</span><div><h3>Cora pipeline</h3><p>Sparse label-propagation scorer, candidate pool, link-probability model, GCN evaluator that is separate from the scorer, pilot run.</p></div></div>
+    <div><span class="pill p-done">Done</span><div><h3>Success criterion written down</h3><p>Value must beat common neighbours, max-degree and link-probability-only on the area under the accuracy-versus-budget curve, on 20 or more fresh seeds, paired tests with correction. The file also lists what result would make us drop or narrow the claim.</p></div></div>
+    <div><span class="pill p-next">Next</span><div><h3>A Cora setting where the budget is meaningful</h3><p>Higher link visibility and a budget in the thousands, or a graph where features alone are weak. Settings are fixed before the confirmatory run.</p></div></div>
+    <div><span class="pill p-next">Next</span><div><h3>Ablation and upper bound</h3><p>Separate the target objective from the shortlist restriction, and add an oracle strategy that shows how much room remains.</p></div></div>
+    <div><span class="pill p-later">Later</span><div><h3>Stronger competitors and a better link model</h3><p>Embedding-based link probabilities in the style of ALPINE, query by committee, and a second real dataset.</p></div></div>
+  </div>
+  <p class="cap">If value does not beat the best baseline on the fresh real-data seeds, the claim narrows to synthetic community graphs, and the report says so.</p>
+</section>
+</main>
+
+<script>
+const DATA = __DATA__;
+const NS = "http://www.w3.org/2000/svg";
+const css = n => `var(--${n})`;
+function svg(el, html){ el.innerHTML = html; }
+const T = (x,y,s,o={}) => `<text x="${x}" y="${y}" font-size="${o.size||13}" text-anchor="${o.anchor||'start'}" class="${o.cls||''}" ${o.weight?`font-weight="${o.weight}"`:''} ${o.fill?`style="fill:${o.fill}"`:''}>${s}</text>`;
+
+/* Loop diagram */
+(function(){
+  const steps = [["Observed graph","15% of links"],["Pick a pair","strategy decides"],["Ask the oracle","real link? yes / no"],["Update graph","add link if real"],["Classify targets","accuracy measured"]];
+  const w=130, gap=37, y=70, h=70; let h_="";
+  steps.forEach((s,i)=>{
+    const x=10+i*(w+gap);
+    const hi = i===1;
+    h_+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${hi?css('accent'):css('surface')}" stroke="${hi?css('accent'):css('base')}" stroke-width="1.5"/>`;
+    h_+=T(x+w/2,y+31,s[0],{anchor:'middle',size:14,weight:600,fill:hi?css('surface'):css('fg')});
+    h_+=T(x+w/2,y+51,s[1],{anchor:'middle',size:12,fill:hi?css('surface'):css('muted')});
+    if(i<4) h_+=`<line x1="${x+w+3}" y1="${y+h/2}" x2="${x+w+gap-4}" y2="${y+h/2}" stroke="${css('muted')}" stroke-width="1.5" marker-end="url(#ar)"/>`;
+  });
+  const x0=10+3*(w+gap)+w/2, x1=10+1*(w+gap)+w/2;
+  h_+=`<path d="M${x0} ${y+h+4} V${y+h+34} H${x1} V${y+h+6}" fill="none" stroke="${css('muted')}" stroke-width="1.5" marker-end="url(#ar)"/>`;
+  h_+=T((x0+x1)/2,y+h+54,"repeat until the budget is spent",{anchor:'middle',size:12,cls:'t-muted'});
+  h_+=T(10,36,"What the scorer may use: visible links, training labels, target set, budget.",{size:12,cls:'t-muted'});
+  document.getElementById('loop').innerHTML=h_;
+})();
+
+/* Finding 1: paired bars */
+(function(){
+  const B=DATA.bars, L=190, mid=410, top=34, rh=40, bh=18;
+  const maxF=12, maxG=0.26, wF=mid-L-50, wG=380;
+  let h="";
+  h+=T(L,20,"Real links found (of 200 queries)",{size:12,cls:'t-muted t-mono'});
+  h+=T(mid+40,20,"Accuracy gain on targets",{size:12,cls:'t-muted t-mono'});
+  B.forEach((b,i)=>{
+    const y=top+i*rh, hi=b.name==="Value, targets";
+    h+=T(L-12,y+bh-3,b.name,{anchor:'end',size:13,weight:hi?600:400});
+    const wf=b.found/maxF*wF, wg=b.gain/maxG*wG;
+    h+=`<rect x="${L}" y="${y}" width="${wf}" height="${bh}" fill="${hi?css('accent-soft'):css('base-soft')}"/>`;
+    h+=T(L+wf+6,y+bh-4,b.found.toFixed(1),{size:12,cls:'t-mono'});
+    h+=`<rect x="${mid+40}" y="${y}" width="${Math.max(wg,1)}" height="${bh}" fill="${hi?css('accent'):css('base')}"/>`;
+    h+=T(mid+40+wg+6,y+bh-4,"+"+b.gain.toFixed(3),{size:12,cls:'t-mono',weight:hi?600:400});
+  });
+  h+=`<line x1="${L}" y1="${top-8}" x2="${L}" y2="${top+B.length*rh-10}" stroke="${css('rule')}"/>`;
+  h+=`<line x1="${mid+40}" y1="${top-8}" x2="${mid+40}" y2="${top+B.length*rh-10}" stroke="${css('rule')}"/>`;
+  document.getElementById('f1').innerHTML=h;
+})();
+
+/* Finding 2: curves */
+function drawCurves(tf){
+  const C=DATA.curves[tf];
+  const series=[["random/adaptive","Random",css('base-soft'),0,"1"],["common_nbrs/adaptive","Common neighbours",css('base'),0,"1"],["value/static","Value, static",css('accent'),1,"6 4"],["value/adaptive","Value, adaptive",css('accent'),1,"0"]];
+  const L=56,R=170,Tp=20,Bt=50,W=800,H=380,pw=W-L-R,ph=H-Tp-Bt;
+  const X=s=>L+s/400*pw; const ymax=0.35; const Y=v=>Tp+ph-(v/ymax)*ph;
+  let h="";
+  [0,0.1,0.2,0.3].forEach(v=>{h+=`<line x1="${L}" x2="${L+pw}" y1="${Y(v)}" y2="${Y(v)}" stroke="${css('rule')}"/>`+T(L-8,Y(v)+4,v.toFixed(1),{anchor:'end',size:12,cls:'t-muted t-mono'});});
+  [0,100,200,300,400].forEach(s=>{h+=T(X(s),H-Bt+20,s,{anchor:'middle',size:12,cls:'t-muted t-mono'});});
+  h+=T(L+pw/2,H-8,"Queries spent",{anchor:'middle',size:12,cls:'t-muted'});
+  h+=`<text transform="translate(14 ${Tp+ph/2}) rotate(-90)" text-anchor="middle" font-size="12" class="t-muted">Accuracy gain on targets</text>`;
+  h+=`<line x1="${X(200)}" x2="${X(200)}" y1="${Tp}" y2="${Tp+ph}" stroke="${css('muted')}" stroke-dasharray="2 4"/>`+T(X(200)+6,Tp+12,"200 queries",{size:11,cls:'t-muted t-mono'});
+  const ends=[];
+  series.forEach(([k,name,col,thick,dash])=>{
+    const s=C[k]; if(!s) return;
+    const pts=s.steps.map((st,i)=>`${X(st).toFixed(1)},${Y(s.gain[i]).toFixed(1)}`).join(" ");
+    h+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="${thick?3:2}" ${dash!=="0"&&dash!=="1"?`stroke-dasharray="${dash}"`:""} stroke-linejoin="round"/>`;
+    ends.push([Y(s.gain[s.gain.length-1]),name,col,thick,s.gain[s.gain.length-1]]);
+  });
+  ends.sort((a,b)=>a[0]-b[0]);
+  for(let i=1;i<ends.length;i++) if(ends[i][0]-ends[i-1][0]<16) ends[i][0]=ends[i-1][0]+16;
+  ends.forEach(([y,name,col,thick,v])=>{h+=T(L+pw+8,y+4,`${name}  +${v.toFixed(2)}`,{size:12,weight:thick?600:400});});
+  document.getElementById('f2').innerHTML=h;
+}
+drawCurves("0.15");
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  drawCurves(b.dataset.tf);
+}));
+
+/* Finding 3: decomposition */
+(function(){
+  const D=DATA.decomp, L=230, top=14, rh=46, bh=24, maxv=0.26, wmax=470;
+  let h="";
+  D.forEach(([n,v],i)=>{
+    const y=top+i*rh, last=i===D.length-1, w=v/maxv*wmax;
+    h+=T(L-12,y+bh-7,n,{anchor:'end',size:13,weight:last?600:400});
+    h+=`<rect x="${L}" y="${y}" width="${w}" height="${bh}" fill="${i>=2?css('accent'):css('base')}" opacity="${i===3?0.7:1}"/>`;
+    h+=T(L+w+8,y+bh-7,"+"+v.toFixed(3),{size:13,cls:'t-mono',weight:last?600:400});
+  });
+  const y2=top+2*rh+bh+6, y3=top+3*rh;
+  h+=T(L+0.1/maxv*wmax+8,top+2*rh+bh+16,"",{});
+  document.getElementById('f3').innerHTML=h
+    +T(L+wmax-10,top+2.62*rh,"+0.08 from aiming at targets",{anchor:'end',size:11,cls:'t-muted t-mono'})
+    +T(L+wmax-10,top+3.62*rh,"+0.05 from adaptive",{anchor:'end',size:11,cls:'t-muted t-mono'});
+})();
+
+/* Cora fragmentation */
+(function(){
+  const pts=[[0.15,1642],[0.30,954],[0.50,466],[0.70,210]]; const tot=2708;
+  const L=56,Bt=44,Tp=24,W=400,H=300,pw=W-L-16,ph=H-Tp-Bt, bw=48;
+  let h=T(L,14,"Isolated nodes in Cora by visible fraction",{size:12,cls:'t-muted t-mono'});
+  [0,1000,2000].forEach(v=>{const y=Tp+ph-v/tot*ph; h+=`<line x1="${L}" x2="${W-10}" y1="${y}" y2="${y}" stroke="${css('rule')}"/>`+T(L-8,y+4,v,{anchor:'end',size:11,cls:'t-muted t-mono'});});
+  pts.forEach(([f,v],i)=>{
+    const x=L+16+i*(pw/4), bh=v/tot*ph, hi=i===0;
+    h+=`<rect x="${x}" y="${Tp+ph-bh}" width="${bw}" height="${bh}" fill="${hi?css('warn'):css('base-soft')}"/>`;
+    h+=T(x+bw/2,Tp+ph-bh-6,v.toLocaleString(),{anchor:'middle',size:12,cls:'t-mono',weight:hi?600:400});
+    h+=T(x+bw/2,H-Bt+20,Math.round(f*100)+"%",{anchor:'middle',size:12,cls:'t-mono'});
+  });
+  h+=T(L+pw/2,H-8,"Links visible",{anchor:'middle',size:12,cls:'t-muted'});
+  document.getElementById('f4').innerHTML=h;
+})();
+
+/* Scale comparison */
+(function(){
+  const rows=[["Synthetic (90 nodes)",28,css('accent')],["Cora (2,708 nodes)",5,css('warn')]];
+  const L=24,W=400, wmax=W-L-60;
+  let h=T(L,14,"Real links found by value, as % of visible links",{size:12,cls:'t-muted t-mono'});
+  rows.forEach(([n,v,c],i)=>{
+    const y=60+i*90;
+    h+=T(L,y-10,n,{size:13,weight:600});
+    h+=`<rect x="${L}" y="${y}" width="${v/30*wmax}" height="30" fill="${c}"/>`;
+    h+=T(L+v/30*wmax+8,y+20,"≈ "+v+"%",{size:14,cls:'t-mono',weight:600});
+  });
+  h+=T(L,250,"Synthetic: about 8 found on 28 visible. Cora: about 42 on 791.",{size:12,cls:'t-muted'});
+  document.getElementById('f5').innerHTML=h;
+})();
+</script>

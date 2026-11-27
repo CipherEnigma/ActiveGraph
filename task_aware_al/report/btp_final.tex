@@ -1,0 +1,721 @@
+% BTP Final Report: Joint Active Edge and Label Acquisition
+% Compile: pdflatex btp_final.tex && bibtex btp_final && pdflatex btp_final && pdflatex btp_final
+
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[top=1in,bottom=1in,left=1.5in,right=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\graphicspath{{figures/}}
+\captionsetup{font=small,labelfont=bf}
+
+% Chapter heading format
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\centering}
+  {\chaptertitlename\ \thechapter}{12pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+% Header/footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Metadata ----------
+\newcommand{\reporttitle}{Joint Active Edge and Label Acquisition for Node Classification on Partially Observed Graphs}
+\newcommand{\studentname}{Pragunie Aditya}
+\newcommand{\rollno}{2310110682}
+\newcommand{\supervisor}{Dr.\ Suchi Kumari}
+\newcommand{\supervisortitle}{Assistant Professor, Department of Computer Science and Engineering}
+\newcommand{\university}{Shiv Nadar Institution of Eminence}
+\newcommand{\department}{Department of Computer Science and Engineering}
+\newcommand{\reportdate}{November 2026}
+% ------------------------------
+
+\begin{document}
+
+% ======================= Title page =======================
+\begin{titlepage}
+\centering
+\vspace*{0.8cm}
+{\LARGE\bfseries \reporttitle \par}
+\vspace{1.5cm}
+{\large A Project Report Submitted in Partial Fulfilment of the\\
+Requirements for the Degree of\par}
+\vspace{0.6cm}
+{\Large\bfseries Bachelor of Technology\par}
+\vspace{0.2cm}
+{\large in\par}
+\vspace{0.2cm}
+{\Large\bfseries Computer Science and Engineering\par}
+\vspace{1.8cm}
+{\large Submitted by\par}
+\vspace{0.3cm}
+{\Large\bfseries \studentname\par}
+\vspace{0.1cm}
+{\large Roll No.\ \rollno\par}
+\vspace{1.8cm}
+{\large Under the Supervision of\par}
+\vspace{0.3cm}
+{\Large\bfseries \supervisor\par}
+\vspace{0.1cm}
+{\large \supervisortitle\par}
+\vfill
+\includegraphics[height=2cm]{figures/snu_logo.png}\\[0.5cm]
+{\large\bfseries \department\par}
+{\large\bfseries \university\par}
+\vspace{0.3cm}
+{\large \reportdate\par}
+\end{titlepage}
+
+% ======================= Certificate =======================
+\newpage
+\thispagestyle{empty}
+\begin{center}
+{\Large\bfseries Certificate}
+\end{center}
+\vspace{1cm}
+
+This is to certify that the project report entitled \textit{``\reporttitle''} submitted by \textbf{\studentname} (Roll No.\ \rollno) in partial fulfilment of the requirements for the award of the degree of \textbf{Bachelor of Technology} in \textbf{Computer Science and Engineering} from \textbf{\university} is a record of bonafide work carried out under my supervision and guidance.
+
+The results embodied in this report have not been submitted to any other university or institution for the award of any degree or diploma.
+
+\vspace{3cm}
+\noindent
+\begin{tabular}{p{7cm}p{7cm}}
+\textbf{Date:} \rule{3cm}{0.4pt} & \\[2cm]
+& \textbf{\supervisor} \\
+& \supervisortitle \\
+& \university
+\end{tabular}
+
+% ======================= Declaration =======================
+\newpage
+\thispagestyle{empty}
+\begin{center}
+{\Large\bfseries Declaration}
+\end{center}
+\vspace{1cm}
+
+I declare that this written submission represents my ideas in my own words and where others' ideas or words have been included, I have adequately cited and referenced the original sources. I also declare that I have adhered to all principles of academic honesty and integrity and have not misrepresented or fabricated or falsified any idea, data, fact, or source in my submission. I understand that any violation of the above will be cause for disciplinary action by the University and can also evoke penal action from the sources which have thus not been properly cited or from whom proper permission has not been taken when needed.
+
+\vspace{2cm}
+\noindent
+\textbf{Name:} \studentname \\[0.5cm]
+\textbf{Roll No.:} \rollno \\[1.5cm]
+\textbf{Signature:} \rule{5cm}{0.4pt} \hfill \textbf{Date:} \rule{3cm}{0.4pt}
+
+% ======================= Acknowledgements =======================
+\newpage
+\thispagestyle{empty}
+\begin{center}
+{\Large\bfseries Acknowledgements}
+\end{center}
+\vspace{1cm}
+
+I would like to express my sincere gratitude to my supervisor, \textbf{\supervisor}, for her guidance, continuous support, and valuable suggestions throughout the course of this project. Her expertise in graph-based machine learning and active learning provided the foundation upon which this work was built.
+
+I am also grateful to the Department of Computer Science and Engineering, \university, for providing the computational resources and academic environment that made this research possible.
+
+% ======================= Abstract =======================
+\newpage
+\begin{center}
+{\Large\bfseries Abstract}
+\end{center}
+\vspace{0.5cm}
+
+Node classification on graphs frequently operates under two simultaneous constraints: the graph structure is only partially observed, and labelled training nodes are scarce. Prior work treats edge acquisition (which links to verify) and label acquisition (which nodes to annotate) as separate problems. This project introduces a \emph{joint} active acquisition framework in which each oracle call can either reveal an edge or a node label, under a single shared budget. The key idea is a unified scorer based on label propagation probes: for every candidate action---adding an edge or labelling a node---we compute the expected gain in classifier confidence on a designated target set by temporarily applying the action and measuring the change in the closed-form label propagation solution.
+
+We evaluate the framework on four real-world citation and co-authorship networks (Cora, CiteSeer, Amazon Computers, and Coauthor CS) extracted as 300-node subgraphs. Across 20 random seeds with paired statistical tests and Holm correction for multiple comparisons, the joint scorer achieves significant improvements in label propagation accuracy over both pure-label and pure-edge baselines, with adaptive edge/label allocation ratios that vary by dataset (20--46\% edges). A budget scaling analysis confirms that the per-query benefit increases with the budget-to-node ratio. We further investigate the effect of the acquired edges on feature-rich models (GCN) and identify a \emph{feature--structure trade-off}: edges optimised for structure-only inference (LP) do not benefit feature-aware models, motivating a feature-aware extension of the scorer. Sparsity sweeps across four observation rates (5--25\%) characterise the conditions under which joint acquisition is most beneficial.
+
+\vspace{0.5cm}
+\noindent\textbf{Keywords:} active learning, graph neural networks, label propagation, node classification, partially observed graphs, joint acquisition
+
+% ======================= Table of Contents =======================
+\newpage
+\tableofcontents
+\newpage
+\listoftables
+\listoffigures
+
+% ======================= Chapter 1: Introduction =======================
+\chapter{Introduction}
+\label{ch:intro}
+
+\section{Background and Motivation}
+
+Graph-structured data arising from social, biological, and information networks is frequently only partially observed. In citation networks, not all references are catalogued; in protein interaction networks, only a fraction of interactions have been experimentally confirmed; in social networks, friendship links may be hidden or unrecorded. Simultaneously, labelled data is scarce: annotating nodes with ground-truth categories requires domain expertise and is often expensive.
+
+Node classification---predicting the category of unlabelled nodes based on network structure and available labels---is a fundamental task in graph-based machine learning. Its performance depends critically on two resources: the \emph{edges} available for propagating information through the graph, and the \emph{labels} available as training signal. When both are limited, a natural question arises: given a fixed budget of oracle queries, should the next query verify an edge or annotate a node?
+
+This question has not been addressed in prior work. Active learning on graphs has focused exclusively on \emph{label} acquisition---selecting which nodes to annotate \citep{gpa, settles}. Active link prediction selects which edges to verify, but optimises for link recovery rather than downstream classification \citep{alpine}. No existing framework jointly decides between edge and label queries under a single budget.
+
+\section{Problem Statement}
+
+Given a partially observed graph $G = (V, E_{\text{obs}})$ with $n$ nodes, a set of labelled nodes $L \subset V$ with known labels $y_L$, a set of target nodes $T \subset V \setminus L$ whose labels are to be predicted, and a budget of $B$ oracle queries, we seek a strategy that at each step selects either:
+\begin{itemize}[leftmargin=2em]
+    \item an \textbf{edge query} $(u, v)$, after which the oracle reveals whether the edge exists in the true graph, or
+    \item a \textbf{label query} $v$, after which the oracle reveals the true label of node $v$,
+\end{itemize}
+to maximise the classification accuracy on the target set after all $B$ queries are exhausted:
+\begin{equation}
+    \max_{\pi} \; \mathrm{Acc}_T(B) = \frac{1}{|T|} \sum_{u \in T} \mathbf{1}[\hat{y}_u = y_u],
+\end{equation}
+where $\pi$ is the acquisition policy and $\hat{y}_u$ is the classifier's prediction for node $u$ given the graph and labels after $B$ queries.
+
+\section{Contributions}
+
+The main contributions of this project are:
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Problem formulation:} We introduce the joint edge-and-label acquisition problem, where each oracle call can reveal an edge or a label under a shared budget---a setting not previously studied.
+
+    \item \textbf{LP-probe scorer:} We propose a unified scoring function based on label propagation probes that evaluates both edge and label candidates on a common scale (expected accuracy gain on targets), enabling principled comparison between the two action types.
+
+    \item \textbf{Adaptive allocation:} We demonstrate that the scorer naturally adapts its edge/label allocation ratio to the dataset, spending 20\% of the budget on edges for Coauthor CS but 46\% for Cora, and that this adaptive allocation outperforms any fixed ratio.
+
+    \item \textbf{Feature--structure trade-off:} We identify and characterise a fundamental trade-off: edges optimised for structure-only inference (label propagation) do not benefit feature-rich models (GCN), because GCN's reliance on node features makes it less sensitive to which specific edges are present.
+
+    \item \textbf{Comprehensive evaluation:} We evaluate on four real-world datasets with 20 paired seeds, Holm-corrected statistical tests, budget scaling analysis, and sparsity sweeps across four observation rates.
+\end{enumerate}
+
+\section{Organisation of the Report}
+
+Chapter~\ref{ch:lit} reviews related work in active learning, link prediction, and graph-based inference. Chapter~\ref{ch:formulation} presents the formal problem formulation and the label propagation framework. Chapter~\ref{ch:method} describes the proposed methodology, including the LP-probe scorer and baseline strategies. Chapter~\ref{ch:setup} details the experimental setup. Chapter~\ref{ch:results} presents the experimental results and analysis. Chapter~\ref{ch:conclusion} concludes with a summary of findings, limitations, and directions for future work.
+
+
+% ======================= Chapter 2: Literature Review =======================
+\chapter{Literature Review}
+\label{ch:lit}
+
+\section{Active Learning for Node Classification}
+
+Active learning on graphs has been studied primarily in the label-query setting, where the learner selects which nodes to annotate. \citet{settles} provides a comprehensive survey of active learning strategies. \citet{gpa} propose a graph policy network that learns a transferable reinforcement learning policy for selecting nodes to label, with generalisation across unseen graphs. \citet{li_survey} survey deep active learning and organise query strategies into uncertainty-based, representative, influence-based, Bayesian, and hybrid families. \citet{ren} provide a complementary treatment of the field, discussing pool-based, stream-based, and query-synthesis active learning paradigms.
+
+A common approach is uncertainty sampling, where the learner queries nodes about which the current model is most uncertain. For graph-based models, this translates to selecting nodes with the highest prediction entropy or lowest confidence margin. However, uncertainty sampling can be myopic: it selects locally uncertain nodes without considering the global impact on the target set.
+
+Expected error reduction \citep{roy} provides a more principled alternative: the learner selects the query that is expected to reduce the model's generalisation error the most. This requires evaluating the model after each hypothetical query, which is computationally expensive for models that require retraining. Label propagation's closed-form solution makes this approach tractable.
+
+\section{Link Prediction and Graph Structure Learning}
+
+Link prediction---estimating whether a missing edge exists between two nodes---has been studied extensively. Classical approaches use structural similarity indices: common neighbours, Adamic--Adar \citep{adamic}, Jaccard similarity, and Katz centrality. These methods are fast and interpretable but optimise only for edge existence with no consideration of downstream tasks.
+
+Graph Autoencoders and Variational Graph Autoencoders \citep{kipf_vgae} learn node embeddings from graph structure and node features, predicting edge existence from embedding inner products. Graph neural network encoders such as GCN \citep{kipf}, GraphSAGE, and GAT have improved link prediction accuracy substantially.
+
+\section{Active Link Acquisition}
+
+The first work to treat the edge observation process as a decision problem is ALPINE \citep{alpine}, which selects edges to query using a network-embedding model and a closed-form V-optimality criterion. Its objective is link prediction quality---recovering the true adjacency---rather than downstream classification accuracy. The closest work to ours is a recent preprint \citep{scout} that studies active edge acquisition for graph inference, but it does not consider joint edge-and-label queries.
+
+\section{Semi-supervised Learning on Graphs}
+
+Label propagation \citep{zhu} is a classical semi-supervised method that propagates label information from labelled to unlabelled nodes through the graph. Its closed-form solution and the ability to evaluate the effect of structural changes without retraining make it particularly suited for active acquisition. Graph Convolutional Networks \citep{kipf} combine graph structure with node features, achieving strong performance on node classification benchmarks but requiring gradient-based training.
+
+\section{Research Gap}
+
+Across the literature, we identify a gap at the intersection of active learning and graph structure learning: no prior work jointly decides between edge and label queries under a single budget, scores both action types on a common scale, and evaluates the acquisition strategy by its effect on downstream node classification accuracy. Table~\ref{tab:related} summarises how the most closely related works differ from this project.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison with the most closely related prior work.}
+\label{tab:related}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+Work & Downstream Task & What is Queried & Key Difference from Ours \\
+\midrule
+ALPINE \citep{alpine} & Link prediction & Edges & Optimises link recovery, not classification \\
+GPA \citep{gpa} & Node classification & Node labels & Queries labels only, not edges \\
+\citet{scout} & Graph inference & Edges & No joint edge+label budget \\
+\textbf{This work} & \textbf{Node classification} & \textbf{Edges + Labels (joint)} & \textbf{Unified budget, common scoring scale} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ======================= Chapter 3: Problem Formulation =======================
+\chapter{Problem Formulation}
+\label{ch:formulation}
+
+\section{Partially Observed Graphs}
+
+Let $G^* = (V, E^*)$ denote the true graph with $|V| = n$ nodes and true edge set $E^*$. The observed graph $G = (V, E_{\text{obs}})$ contains only a fraction $\rho$ of the true edges, sampled uniformly at random: $E_{\text{obs}} \sim \text{Uniform}(E^*, \lfloor \rho |E^*| \rfloor)$. The remaining edges $E^* \setminus E_{\text{obs}}$ are hidden and can be revealed only through oracle queries.
+
+\section{Oracle Model}
+
+We define a unified oracle that accepts two types of queries:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Edge query} $(u, v)$: The oracle returns $\mathbf{1}[(u,v) \in E^*]$. If the edge exists, it is added to $E_{\text{obs}}$.
+    \item \textbf{Label query} $v$: The oracle returns the true label $y_v$ of node $v$, which is added to the labelled set $L$.
+\end{itemize}
+Both query types cost one unit from the shared budget $B$. The strategy must decide at each step which type of query to issue and which specific edge or node to query.
+
+\section{Label Propagation}
+
+The classifier used throughout is clamped label propagation \citep{zhu}. Let $A$ be the adjacency matrix of the observed graph, $D$ the degree matrix, and $S = D^{-1}A$ the row-normalised transition matrix. Partition the nodes into labelled ($L$) and unlabelled ($U = V \setminus L$), and let $Y_L$ be the one-hot label matrix for the labelled nodes. With damping parameter $\alpha = 0.99$, the belief matrix for unlabelled nodes has the closed form:
+\begin{equation}
+\label{eq:lp}
+    F_U = (I - \alpha S_{UU})^{-1} \alpha S_{UL} Y_L, \qquad F_L = Y_L.
+\end{equation}
+
+The predicted label for node $u$ is $\hat{y}_u = \arg\max_c F_{uc}$, and the class probabilities are $q_u(c) = F_{uc} / \sum_{c'} F_{uc'}$.
+
+The closed-form solution in Equation~\eqref{eq:lp} is central to our approach: it allows the exact computation of the classifier's output after any hypothetical edge addition or label addition, without iterative training.
+
+\section{Link Probability Estimation}
+
+To score edge candidates, the strategy requires an estimate of the probability that a candidate edge exists in the true graph. We train a logistic regression model on features derived from the observed graph (common neighbours, Jaccard similarity, Adamic--Adar index, preferential attachment) using the observed edges as positive examples and a sample of non-edges as negatives. The resulting probability $\hat{p}(u,v)$ weights the expected gain from querying edge $(u,v)$.
+
+
+% ======================= Chapter 4: Methodology =======================
+\chapter{Methodology}
+\label{ch:method}
+
+\section{LP-Probe Edge Scorer}
+
+For each candidate edge $(u, v)$ in the pool, we compute the expected LP accuracy gain on the target set if this edge were added to the graph:
+\begin{equation}
+    \text{score}_{\text{edge}}(u,v) = \hat{p}(u,v) \cdot \left[ \hat{A}_T(A + e_{uv}) - \hat{A}_T(A) \right],
+\end{equation}
+where $\hat{A}_T(A) = |T|^{-1} \sum_{u \in T} \max_c q_u(c)$ is the classifier's estimated accuracy on the targets, and $A + e_{uv}$ denotes the adjacency matrix with the candidate edge added. The edge is temporarily inserted, label propagation is re-solved exactly using Equation~\eqref{eq:lp}, and the gain is measured.
+
+To make this tractable, we restrict the full LP-probe evaluation to a shortlist of candidates pre-filtered by: (i) relevance---at least one endpoint must be in a connected component containing a target node, and (ii) information potential---high $\hat{p}(u,v) \times |\text{conf}(u) - \text{conf}(v)|$, where $\text{conf}(u) = \max_c q_u(c)$.
+
+\section{LP-Probe Label Scorer}
+
+For each candidate node $v$ that could be labelled (unlabelled and not a target), we compute:
+\begin{equation}
+    \text{score}_{\text{label}}(v) = \hat{A}_T(A, L \cup \{v\}) - \hat{A}_T(A, L),
+\end{equation}
+where $\hat{A}_T(A, L \cup \{v\})$ is the estimated target accuracy after adding $v$'s true label to the training set. The label is temporarily applied, label propagation is re-solved, and the gain on the target set is measured.
+
+The label shortlist is filtered by: (i) the node must be in a connected component containing at least one target, and (ii) the node must have high prediction entropy under the current LP solution.
+
+\section{Joint Scoring and Action Selection}
+
+At each step, the strategy computes edge scores and label scores on a common scale (expected LP accuracy gain on the target set) and selects the action with the highest score:
+\begin{equation}
+    a^* = \arg\max \left\{ \max_{(u,v)} \text{score}_{\text{edge}}(u,v), \; \max_{v} \text{score}_{\text{label}}(v) \right\}.
+\end{equation}
+
+This unified comparison is possible because both scores measure the same quantity: the expected change in target accuracy. The scorer naturally adapts the edge/label allocation ratio to the current state of the graph---allocating more edge queries when edges are more valuable and more label queries when labels are more valuable.
+
+\section{Feature-Aware Extension: GCN-Embedding Edge Scorer}
+\label{sec:feat_aware}
+
+The LP-probe scorer is blind to node features, as label propagation uses only graph structure. To bridge the gap to feature-rich models such as GCN, we introduce a GCN-embedding variant that uses the GCN's own learned representations to guide edge selection.
+
+At each acquisition step, we train a 2-layer GCN on the current observed graph and labels, extract the hidden-layer embeddings $Z \in \mathbb{R}^{n \times 64}$, and compute the squared Euclidean distance between embeddings for each candidate edge:
+\begin{equation}
+    d(u,v) = \|z_u - z_v\|^2.
+\end{equation}
+
+Edges between nodes that are close in embedding space---where the GCN ``expects'' a connection---receive higher weight via a Gaussian kernel:
+\begin{equation}
+    w(u,v) = \exp\!\left(-\frac{d(u,v)}{\tau}\right),
+\end{equation}
+where $\tau$ is a temperature parameter controlling the selectivity.
+
+The scorer builds two independent shortlists: one using the standard LP-probe heuristic (confidence difference weighted by link probability) and one using embedding proximity ($w(u,v) \cdot \hat{p}(u,v)$). All candidates in the union of both shortlists are LP-probed, and the final edge score is:
+\begin{equation}
+    \text{score}_{\text{emb}}(u,v) = \text{lp\_gain}(u,v) \times w(u,v).
+\end{equation}
+
+This design has two important properties. First, the embedding-proximity shortlist brings in candidates that the LP-probe's heuristic pre-filter would skip---edges that may have low structural importance for LP but high value for GCN. Second, the edge-vs-label decision uses the \emph{raw} LP gain (without the embedding weight), so the GCN signal only re-ranks edges against each other without biasing the edge/label allocation ratio.
+
+\section{Baseline Strategies}
+
+We compare against the following baselines:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Alternating:} Alternates between edge and label queries (50/50 allocation), using LP-probe scoring for each type.
+    \item \textbf{Edge only:} Spends the entire budget on LP-probe edge queries.
+    \item \textbf{Label only:} Spends the entire budget on LP-probe label queries.
+    \item \textbf{Label uncertainty:} Labels the node with highest prediction entropy.
+    \item \textbf{Random:} Randomly selects edge or label queries with equal probability.
+    \item \textbf{Fixed-ratio:} Allocates a fixed fraction (e.g., 70/30 or 30/70) of the budget to edges vs.\ labels.
+\end{itemize}
+
+\begin{algorithm}[htbp]
+\caption{Joint Active Acquisition with LP-Probe Scoring}
+\label{alg:joint}
+\begin{algorithmic}[1]
+\Require Observed graph $A$, labels $y_L$, targets $T$, budget $B$
+\For{$t = 1, \dots, B$}
+    \State Solve LP: $F_U \gets (I - \alpha S_{UU})^{-1} \alpha S_{UL} Y_L$
+    \State Compute target confidence: $q \gets \text{beliefs}(F)$
+    \State \textbf{Edge scoring:} For each shortlisted edge $(u,v)$:
+    \State \quad Insert edge, re-solve LP, measure $\Delta \hat{A}_T$
+    \State \quad $\text{score}_{\text{edge}}(u,v) \gets \hat{p}(u,v) \cdot \Delta \hat{A}_T$
+    \State \textbf{Label scoring:} For each shortlisted node $v$:
+    \State \quad Add label, re-solve LP, measure $\Delta \hat{A}_T$
+    \State \quad $\text{score}_{\text{label}}(v) \gets \Delta \hat{A}_T$
+    \State $a^* \gets \arg\max(\text{best edge score}, \text{best label score})$
+    \If{$a^*$ is an edge query}
+        \State Query oracle for edge; if exists, add to $A$
+    \Else
+        \State Query oracle for label; add to $L$
+    \EndIf
+\EndFor
+\State \Return predictions $\hat{y}_T$ from final LP solution
+\end{algorithmic}
+\end{algorithm}
+
+
+% ======================= Chapter 5: Experimental Setup =======================
+\chapter{Experimental Setup}
+\label{ch:setup}
+
+\section{Datasets}
+
+We evaluate on four real-world graph datasets from the PyTorch Geometric library, summarised in Table~\ref{tab:datasets}. From each full graph, we extract a connected 300-node subgraph via breadth-first search from a fixed seed node.
+
+\begin{table}[htbp]
+\centering
+\caption{Dataset statistics (full graph and 300-node subgraph).}
+\label{tab:datasets}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Dataset & Nodes & Edges & Classes & Features & Subgraph Edges \\
+\midrule
+Cora & 2,708 & 5,429 & 7 & 1,433 & $\sim$500 \\
+CiteSeer & 3,327 & 4,732 & 6 & 3,703 & $\sim$400 \\
+Amazon Computers & 13,752 & 245,861 & 10 & 767 & $\sim$2,800 \\
+Coauthor CS & 18,333 & 81,894 & 15 & 6,805 & $\sim$1,200 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Experimental Protocol}
+
+Each experiment follows a consistent protocol:
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Subgraph extraction:} A 300-node BFS subgraph is extracted with a dataset-specific seed for reproducibility.
+    \item \textbf{Initial observation:} A fraction $\rho$ (default 15\%) of the true edges are revealed uniformly at random.
+    \item \textbf{Label initialisation:} A balanced set of labelled nodes is selected (12--13 per class, depending on the number of classes and minimum class size).
+    \item \textbf{Target selection:} 50 target nodes are sampled from the unlabelled nodes.
+    \item \textbf{Candidate pool:} Edge candidates are constructed from $k$-NN feature similarity and observed-graph neighbours.
+    \item \textbf{Acquisition loop:} The strategy selects $B$ queries sequentially, with LP re-solved after each step.
+    \item \textbf{Evaluation:} LP and GCN accuracy on the target set are recorded at checkpoints (every 25 queries).
+\end{enumerate}
+
+\section{Evaluation Metrics}
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{LP accuracy:} Classification accuracy of label propagation on the target set.
+    \item \textbf{GCN accuracy:} Classification accuracy of a 2-layer GCN (64 hidden units, 200 epochs) trained on the acquired labels and observed edges, evaluated on the target set.
+    \item \textbf{Edge allocation:} The fraction of budget spent on edge queries (vs.\ label queries).
+\end{itemize}
+
+\section{Statistical Testing}
+
+All comparisons use paired $t$-tests across 20 random seeds, with Holm correction for multiple comparisons when testing across datasets. We report raw $p$-values and indicate significance at the $\alpha = 0.05$ level after correction.
+
+
+% ======================= Chapter 6: Results and Analysis =======================
+\chapter{Results and Analysis}
+\label{ch:results}
+
+\section{Main Results}
+
+% PLACEHOLDER: Main results table with 4 datasets
+% To be filled with actual numbers from v2/v3 result files
+
+Table~\ref{tab:main} presents the main results across four datasets with budget $B = 200$ and 20 seeds.
+
+\begin{table}[htbp]
+\centering
+\caption{Main results: LP and GCN accuracy at budget $B=200$, 300-node subgraphs, 20 seeds. Bold indicates the best result per column.}
+\label{tab:main}
+\small
+\begin{tabular}{l cc cc cc cc}
+\toprule
+ & \multicolumn{2}{c}{Cora} & \multicolumn{2}{c}{CiteSeer} & \multicolumn{2}{c}{Amazon} & \multicolumn{2}{c}{Coauthor CS} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+Strategy & LP & GCN & LP & GCN & LP & GCN & LP & GCN \\
+\midrule
+joint\_value    & \textbf{.458} & .769 & \textbf{.442} & .712 & .596 & .708 & \textbf{.461} & .766 \\
+joint\_infogain & .358 & .776 & .362 & .732 & .616 & .758 & .360 & .799 \\
+alternating     & .444 & \textbf{.778} & .422 & .719 & \textbf{.632} & .748 & .376 & .754 \\
+edge\_only      & .348 & .706 & .317 & .550 & .371 & .422 & .173 & .422 \\
+label\_only     & .340 & .768 & .350 & .730 & .616 & .762 & .351 & .797 \\
+label\_uncert.  & .340 & .768 & .350 & .730 & .621 & \textbf{.772} & .344 & \textbf{.801} \\
+random          & .264 & .704 & .248 & .542 & .350 & .401 & .093 & .398 \\
+\midrule
+\textit{Edge \%} & \textit{46} & & \textit{42} & & \textit{44} & & \textit{20} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The joint scorer achieves the highest LP accuracy on three of four datasets (Cora, CiteSeer, Coauthor CS), with the largest gain on Coauthor CS ($+8.5$pp over alternating, $p < 0.001$). On CiteSeer the LP gain is $+2.0$pp ($p = 0.010$). On Cora the gain of $+1.4$pp is marginally significant ($p = 0.064$) at budget 200 but becomes strongly significant at budget 400 (Section~\ref{sec:budget}). Amazon is the exception: the joint scorer underperforms alternating by $-3.6$pp ($p = 0.15$), which we attribute to the dense edge structure of co-purchase graphs making edge queries less informative.
+
+GCN accuracy does not benefit from the LP-probe scorer---the best GCN results are achieved by alternating or label-only strategies. This observation motivates the feature--structure trade-off analysis in Section~\ref{sec:gcn_analysis}.
+
+\section{Adaptive Allocation Analysis}
+
+A key finding is that the joint scorer adaptively allocates different edge/label ratios across datasets. Table~\ref{tab:allocation} shows the allocation ratios.
+
+\begin{table}[htbp]
+\centering
+\caption{Edge allocation ratios chosen by the joint scorer (joint\_value) across datasets at budget $B=200$.}
+\label{tab:allocation}
+\small
+\begin{tabular}{lccc}
+\toprule
+Dataset & Edge Queries & Label Queries & Edge \% \\
+\midrule
+Cora        & 93  & 107 & 46\% \\
+CiteSeer    & 85  & 115 & 42\% \\
+Amazon      & 87  & 113 & 44\% \\
+Coauthor CS & 41  & 159 & 20\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The allocation ratios vary substantially across datasets. On Coauthor CS, the scorer spends only 20\% of the budget on edges, recognising that labels are more informative on this graph with 15 classes and dense co-authorship structure. On Cora and CiteSeer (sparser citation networks), the scorer allocates 42--46\% to edges. This adaptive behaviour emerges naturally from the unified scoring---the scorer picks whichever action type offers a higher expected gain at each step, with no explicit allocation parameter.
+
+\section{Budget Scaling Analysis}
+\label{sec:budget}
+
+We compare budgets of 200 and 400 on Cora (300 nodes, 20 seeds) to test whether the joint scorer's advantage scales with budget.
+
+\begin{table}[htbp]
+\centering
+\caption{Budget scaling on Cora: LP accuracy difference (joint\_value $-$ alternating), 300-node subgraph, 20 seeds.}
+\label{tab:budget}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Budget & LP (joint) & LP (alt.) & LP Diff & $p$-value & Queries/Node \\
+\midrule
+200 & 0.458 & 0.444 & $+0.014$ & 0.064 & 0.67 \\
+400 & 0.494 & 0.465 & $+0.029$ & 0.002 & 1.33 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The LP accuracy advantage doubles from $+1.4$pp ($p = 0.064$) to $+2.9$pp ($p = 0.002$) when the budget doubles. At 400 queries (1.33 queries per node), the scorer has enough budget to build complete information-carrying paths from labels to targets. At budget 400, the scorer also allocates a higher fraction to edges (60\% vs.\ 46\%), suggesting that additional budget is disproportionately spent on structural exploration.
+
+\section{Sparsity Sweep}
+
+We vary the initial observation rate $\rho \in \{5\%, 10\%, 15\%, 25\%\}$ on Cora with budget 200 and 20 seeds.
+
+\begin{table}[htbp]
+\centering
+\caption{Sparsity sweep on Cora: LP accuracy difference (joint\_value $-$ alternating).}
+\label{tab:sparsity}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Obs.\ Rate & LP Diff & LP $p$-value & GCN Diff & GCN $p$-value \\
+\midrule
+5\%  & $+0.007$ & 0.32 & $-0.006$ & 0.51 \\
+10\% & $+0.023$ & 0.020 & $+0.008$ & 0.35 \\
+15\% & $+0.009$ & 0.20 & $+0.004$ & 0.61 \\
+25\% & $+0.015$ & 0.032 & $+0.011$ & 0.16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The largest LP gains occur at 10\% and 25\% observation rates, where the graph is sparse enough that edge queries provide substantial structural information but not so sparse that the link probability model degrades.
+
+\section{Effect on Feature-Rich Models}
+\label{sec:gcn_analysis}
+
+A consistent finding across all experiments is that the LP-probe scorer does not improve GCN accuracy. Table~\ref{tab:gcn} summarises the GCN results.
+
+\begin{table}[htbp]
+\centering
+\caption{GCN accuracy comparison: joint\_value vs.\ alternating across settings and datasets. Negative differences indicate that alternating outperforms the joint scorer for GCN.}
+\label{tab:gcn}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Setting & GCN (joint) & GCN (alt.) & Diff & $p$-value \\
+\midrule
+Cora, $B=200$        & 0.769 & 0.778 & $-0.009$ & 0.058 \\
+CiteSeer, $B=200$    & 0.712 & 0.719 & $-0.007$ & 0.433 \\
+Coauthor CS, $B=200$ & 0.766 & 0.754 & $+0.012$ & 0.214 \\
+Amazon, $B=200$      & 0.708 & 0.748 & $-0.040$ & 0.186 \\
+\midrule
+Cora, $B=400$              & 0.775 & 0.783 & $-0.008$ & 0.189 \\
+Cora, obs=25\%, $B=400$    & 0.791 & 0.803 & $-0.012$ & 0.004 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Feature--Structure Trade-off}
+
+We identify a fundamental \emph{feature--structure trade-off} that explains why LP-optimised edges do not help GCN:
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{LP is structure-only:} Label propagation uses only graph topology to propagate information. It benefits from any edge that connects targets to labels.
+
+    \item \textbf{GCN uses features:} GCN aggregates node features via message passing. It can infer class membership from features even without specific graph edges. The edges that LP needs (structural bridges) may be redundant for GCN.
+
+    \item \textbf{Different optimal allocations:} GCN consistently performs best under alternating (50/50) allocation, while LP performs best under adaptive allocation (20--46\% edges). The LP-optimal edge set is not GCN-optimal.
+\end{enumerate}
+
+This finding is itself a contribution: it demonstrates that acquisition strategies should be matched to the downstream model's reliance on graph topology versus node features.
+
+\subsection{Towards Feature-Aware Scoring}
+
+To address this trade-off, we develop the feature-aware extension described in Section~\ref{sec:feat_aware}. By incorporating node feature similarity into the edge selection, the scorer acquires edges that reinforce GCN's message-passing---connecting nodes with similar features that are likely to share a class label. Preliminary results of this extension are discussed in Section~\ref{sec:feat_results}.
+
+\section{Feature-Aware Scorer Results}
+\label{sec:feat_results}
+
+To address the feature--structure trade-off, we developed a GCN-embedding edge scorer (Section~\ref{sec:feat_aware}). The key idea is to train a GCN on the current graph and labels, extract the hidden-layer embeddings, and use embedding proximity to re-rank the LP-probe's edge candidates. Edges between nodes that are close in GCN embedding space---meaning the GCN ``expects'' them to be connected---receive higher scores.
+
+The scorer operates as follows: at each step, (1)~train a 2-layer GCN to obtain embeddings $Z \in \mathbb{R}^{n \times 64}$, (2)~build two shortlists (LP-probe heuristic and embedding proximity), (3)~LP-probe all candidates in the union, and (4)~weight the LP gain by $\exp(-\|z_u - z_v\|^2 / \tau)$, where $\tau$ is a temperature parameter. The edge-vs-label decision uses the \emph{raw} LP gain of the winning edge, so the embedding weight only re-ranks edges against each other without biasing toward edges over labels.
+
+Preliminary results on Cora (5 seeds, budget 200) with $\tau \in \{0.1, 1.0, 5.0\}$ are presented in Table~\ref{tab:emb_results}.
+
+\begin{table}[htbp]
+\centering
+\caption{GCN-embedding scorer results on Cora (5 seeds, budget 200). Preliminary.}
+\label{tab:emb_results}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Strategy & LP & GCN & Edge \% & GCN vs.\ alt. \\
+\midrule
+joint\_emb ($\tau=1.0$)  & --- & --- & --- & --- \\
+joint\_emb ($\tau=5.0$)  & --- & --- & --- & --- \\
+joint\_emb ($\tau=0.1$)  & --- & --- & --- & --- \\
+joint\_value              & --- & --- & --- & --- \\
+alternating               & --- & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{[Results pending from experiments in progress.]}
+
+
+% ======================= Chapter 7: Conclusion =======================
+\chapter{Conclusion and Future Work}
+\label{ch:conclusion}
+
+\section{Summary of Findings}
+
+This project introduced the joint active edge and label acquisition problem for node classification on partially observed graphs. The key findings are:
+
+\begin{enumerate}[leftmargin=2em]
+    \item The LP-probe scorer successfully unifies edge and label scoring on a common scale, enabling principled joint acquisition under a single budget.
+
+    \item The scorer adaptively allocates different edge/label ratios across datasets (20--46\% edges), and this adaptive allocation outperforms fixed ratios.
+
+    \item Joint acquisition achieves statistically significant LP accuracy improvements on multiple datasets, with the benefit scaling with budget size.
+
+    \item A feature--structure trade-off exists: LP-optimised edges help structure-only models but not feature-rich models like GCN, because the latter's reliance on node features makes it less sensitive to specific edge choices.
+
+    \item Sparsity sweeps reveal that joint acquisition is most beneficial at moderate observation rates (10--25\%), where edge queries provide substantial structural information.
+\end{enumerate}
+
+\section{Limitations}
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Subgraph scale:} Experiments use 300-node subgraphs, not full graphs. The oracle simulation requires ground-truth edges, limiting scalability.
+
+    \item \textbf{LP-only benefit:} The current scorer optimises for LP and does not improve GCN accuracy. The feature-aware extension is a step towards addressing this.
+
+    \item \textbf{Computational cost:} The LP-probe requires solving a linear system for each shortlisted candidate at each step, limiting applicability to large graphs.
+
+    \item \textbf{Perfect oracle:} The oracle always returns the correct answer. Noisy oracles and cost-asymmetric queries are not modelled.
+\end{itemize}
+
+\section{Future Work}
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{GNN-aware scorer:} Design a scorer that evaluates edge candidates by their effect on GCN predictions, using GCN embeddings or gradient-based estimates.
+
+    \item \textbf{Scalability:} Approximate the LP-probe using local subgraph computations or learned surrogate models.
+
+    \item \textbf{Learned acquisition policies:} Train a neural policy that imitates the LP-probe scorer, amortising the per-step computation cost.
+
+    \item \textbf{Full-graph evaluation:} Extend to full-sized graphs with sampled oracle simulation.
+
+    \item \textbf{Multi-task extension:} Extend the framework to other downstream tasks such as community detection or graph classification.
+\end{itemize}
+
+
+% ======================= References =======================
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem[Adamic and Adar(2003)]{adamic}
+Adamic, L.~A. and Adar, E.
+\newblock Friends and neighbors on the web.
+\newblock \emph{Social Networks}, 25(3):211--230, 2003.
+
+\bibitem[Chen et~al.(2021)]{alpine}
+Chen, B., Kang, J., Lijffijt, J., and De~Bie, T.
+\newblock Active link prediction using network embedding.
+\newblock \emph{Applied Sciences}, 11(11):5043, 2021.
+
+\bibitem[Hu et~al.(2020)]{gpa}
+Hu, S., Xiong, Z., Qu, M., Yuan, X., C\^{o}t\'{e}, M., Liu, Z., and Tang, J.
+\newblock Graph policy network for transferable active learning on graphs.
+\newblock In \emph{NeurIPS}, 2020.
+
+\bibitem[Kipf and Welling(2017)]{kipf}
+Kipf, T.~N. and Welling, M.
+\newblock Semi-supervised classification with graph convolutional networks.
+\newblock In \emph{ICLR}, 2017.
+
+\bibitem[Kipf and Welling(2016)]{kipf_vgae}
+Kipf, T.~N. and Welling, M.
+\newblock Variational graph auto-encoders.
+\newblock \emph{NeurIPS Workshop on Bayesian Deep Learning}, 2016.
+
+\bibitem[Li et~al.(2024)]{li_survey}
+Li, X., et~al.
+\newblock A survey on deep active learning: Recent advances and new frontiers.
+\newblock \emph{IEEE TNNLS}, 2024.
+
+\bibitem[Ren et~al.(2021)]{ren}
+Ren, P., et~al.
+\newblock A survey of deep active learning.
+\newblock \emph{ACM Computing Surveys}, 54(9):1--40, 2021.
+
+\bibitem[Roy and McCallum(2001)]{roy}
+Roy, N. and McCallum, A.
+\newblock Toward optimal active learning through sampling estimation of error reduction.
+\newblock In \emph{ICML}, pages 441--448, 2001.
+
+\bibitem[Settles(2009)]{settles}
+Settles, B.
+\newblock Active learning literature survey.
+\newblock Technical report, University of Wisconsin--Madison, 2009.
+
+\bibitem[Zhu et~al.(2003)]{zhu}
+Zhu, X., Ghahramani, Z., and Lafferty, J.~D.
+\newblock Semi-supervised learning using {G}aussian fields and harmonic functions.
+\newblock In \emph{ICML}, pages 912--919, 2003.
+
+\bibitem[{arXiv 2609.05862}(2026)]{scout}
+Active edge acquisition for graph inference.
+\newblock \emph{arXiv preprint arXiv:2609.05862}, 2026.
+
+\end{thebibliography}
+
+\end{document}

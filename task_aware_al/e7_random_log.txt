@@ -1,0 +1,99 @@
+graph=locked feat=0.1 removal=random seeds=30 budget=200 labels=[0.15, 0.4] workers=7 combos=6
+  done 1/60  (27s)
+  done 2/60  (39s)
+  done 3/60  (53s)
+  done 4/60  (53s)
+  done 5/60  (53s)
+  done 6/60  (53s)
+  done 7/60  (53s)
+  done 8/60  (53s)
+  done 9/60  (59s)
+  done 10/60  (73s)
+  done 11/60  (74s)
+  done 12/60  (74s)
+  done 13/60  (74s)
+  done 14/60  (74s)
+  done 15/60  (74s)
+  done 16/60  (79s)
+  done 17/60  (96s)
+  done 18/60  (97s)
+  done 19/60  (99s)
+  done 20/60  (99s)
+  done 21/60  (99s)
+  done 22/60  (99s)
+  done 23/60  (104s)
+  done 24/60  (129s)
+  done 25/60  (129s)
+  done 26/60  (134s)
+  done 27/60  (134s)
+  done 28/60  (134s)
+  done 29/60  (134s)
+  done 30/60  (144s)
+  done 31/60  (155s)
+  done 32/60  (158s)
+  done 33/60  (158s)
+  done 34/60  (160s)
+  done 35/60  (166s)
+  done 36/60  (166s)
+  done 37/60  (172s)
+  done 38/60  (180s)
+  done 39/60  (182s)
+  done 40/60  (182s)
+  done 41/60  (184s)
+  done 42/60  (185s)
+  done 43/60  (185s)
+  done 44/60  (196s)
+  done 45/60  (199s)
+  done 46/60  (200s)
+  done 47/60  (203s)
+  done 48/60  (206s)
+  done 49/60  (206s)
+  done 50/60  (206s)
+  done 51/60  (213s)
+  done 52/60  (218s)
+  done 53/60  (218s)
+  done 54/60  (220s)
+  done 55/60  (223s)
+  done 56/60  (223s)
+  done 57/60  (226s)
+  done 58/60  (231s)
+  done 59/60  (234s)
+  done 60/60  (234s)
+
+######## labelled = 15%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.084, 0.027)
+start acc=0.482  ceiling (full graph)=0.920  start reach=0.17
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.009     +0.009     +0.013      0.03   0.22    6.8    0.5
+    common_nbrs/adaptive     +0.002     +0.013     +0.031      0.07   0.24    9.9    1.3
+         maxdeg/adaptive     +0.016     +0.024     +0.038      0.09   0.28    7.3    1.3
+       pagerank/adaptive     +0.016     +0.002     +0.016      0.04   0.30    7.3    1.9
+          value/adaptive     +0.082     +0.133     +0.227      0.52   0.70    7.9   18.5
+            value/static     +0.071     +0.111     +0.182      0.42   0.52    8.6    0.4
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.011+-0.080 (p=0.455)  b=100: +0.022+-0.108 (p=0.271)  b=200: +0.044+-0.144 (p=0.101)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.073+-0.093*(p=0.000)  b=100: +0.124+-0.117*(p=0.000)  b=200: +0.213+-0.158*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.080+-0.095*(p=0.000)  b=100: +0.120+-0.128*(p=0.000)  b=200: +0.196+-0.173*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.067+-0.097*(p=0.001)  b=100: +0.109+-0.111*(p=0.000)  b=200: +0.189+-0.149*(p=0.000)
+  pagerank/adaptive                              b=50: +0.067+-0.097*(p=0.001)  b=100: +0.131+-0.107*(p=0.000)  b=200: +0.211+-0.139*(p=0.000)
+-- static value minus static common_nbrs
+
+######## labelled = 40%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.111, 0.014)
+start acc=0.549  ceiling (full graph)=0.962  start reach=0.32
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.007     +0.018     +0.040      0.10   0.37    6.8    0.6
+    common_nbrs/adaptive     +0.009     +0.022     +0.049      0.12   0.40    9.9    1.6
+         maxdeg/adaptive     +0.011     +0.018     +0.036      0.09   0.39    7.3    1.8
+       pagerank/adaptive     +0.013     +0.022     +0.038      0.09   0.40    7.3    2.5
+          value/adaptive     +0.071     +0.138     +0.242      0.59   0.84    9.4   15.0
+            value/static     +0.053     +0.096     +0.164      0.40   0.65    7.5    0.3
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.018+-0.065 (p=0.147)  b=100: +0.042+-0.103*(p=0.032)  b=200: +0.078+-0.104*(p=0.000)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.064+-0.079*(p=0.000)  b=100: +0.120+-0.107*(p=0.000)  b=200: +0.202+-0.118*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.062+-0.076*(p=0.000)  b=100: +0.116+-0.097*(p=0.000)  b=200: +0.193+-0.108*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.060+-0.083*(p=0.000)  b=100: +0.120+-0.113*(p=0.000)  b=200: +0.207+-0.103*(p=0.000)
+  pagerank/adaptive                              b=50: +0.058+-0.083*(p=0.001)  b=100: +0.116+-0.117*(p=0.000)  b=200: +0.204+-0.115*(p=0.000)
+-- static value minus static common_nbrs
+
+* = paired t-test p < 0.05; gain = accuracy on targets minus accuracy before any query

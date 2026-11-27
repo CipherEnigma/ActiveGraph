@@ -1,0 +1,87 @@
+graph=locked feat=0.1 seeds=30 budget=200 labels=[0.15, 0.4] workers=7 combos=5
+  done 1/60  (45s)
+  done 2/60  (45s)
+  done 3/60  (45s)
+  done 4/60  (47s)
+  done 5/60  (47s)
+  done 6/60  (47s)
+  done 7/60  (47s)
+  done 8/60  (68s)
+  done 9/60  (69s)
+  done 10/60  (72s)
+  done 11/60  (72s)
+  done 12/60  (72s)
+  done 13/60  (72s)
+  done 14/60  (74s)
+  done 15/60  (95s)
+  done 16/60  (95s)
+  done 17/60  (95s)
+  done 18/60  (95s)
+  done 19/60  (96s)
+  done 20/60  (98s)
+  done 21/60  (99s)
+  done 22/60  (120s)
+  done 23/60  (120s)
+  done 24/60  (122s)
+  done 25/60  (122s)
+  done 26/60  (122s)
+  done 27/60  (124s)
+  done 28/60  (124s)
+  done 29/60  (145s)
+  done 30/60  (147s)
+  done 31/60  (147s)
+  done 32/60  (147s)
+  done 33/60  (147s)
+  done 34/60  (150s)
+  done 35/60  (150s)
+  done 36/60  (167s)
+  done 37/60  (167s)
+  done 38/60  (167s)
+  done 39/60  (168s)
+  done 40/60  (169s)
+  done 41/60  (174s)
+  done 42/60  (174s)
+  done 43/60  (188s)
+  done 44/60  (188s)
+  done 45/60  (191s)
+  done 46/60  (191s)
+  done 47/60  (191s)
+  done 48/60  (197s)
+  done 49/60  (197s)
+  done 50/60  (209s)
+  done 51/60  (209s)
+  done 52/60  (212s)
+  done 53/60  (213s)
+  done 54/60  (215s)
+  done 55/60  (219s)
+  done 56/60  (219s)
+  done 57/60  (229s)
+  done 58/60  (230s)
+  done 59/60  (232s)
+  done 60/60  (233s)
+
+######## labelled = 15%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.084, 0.027)
+start acc=0.482  ceiling (full graph)=0.920  start reach=0.17
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/frontier     +0.007     +0.022     +0.056      0.13   0.31    8.4    1.8
+    common_nbrs/frontier     +0.013     +0.033     +0.064      0.15   0.29    9.2    2.5
+         maxdeg/frontier     +0.013     +0.027     +0.038      0.09   0.28    7.3    2.9
+       pagerank/frontier     +0.011     -0.000     +0.022      0.05   0.31    7.5    3.7
+          value/frontier     +0.062     +0.144     +0.229      0.52   0.69    7.4   17.9
+-- active learning: adaptive minus static (same strategy)
+-- task-aware: value (adaptive) minus ...
+-- static value minus static common_nbrs
+
+######## labelled = 40%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.111, 0.014)
+start acc=0.549  ceiling (full graph)=0.962  start reach=0.32
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/frontier     +0.031     +0.062     +0.100      0.24   0.50    8.5    1.7
+    common_nbrs/frontier     +0.016     +0.042     +0.076      0.18   0.47   10.0    2.2
+         maxdeg/frontier     +0.018     +0.024     +0.042      0.10   0.40    7.7    2.2
+       pagerank/frontier     +0.016     +0.038     +0.040      0.10   0.41    7.4    2.8
+          value/frontier     +0.062     +0.124     +0.231      0.56   0.81    8.8   13.5
+-- active learning: adaptive minus static (same strategy)
+-- task-aware: value (adaptive) minus ...
+-- static value minus static common_nbrs
+
+* = paired t-test p < 0.05; gain = accuracy on targets minus accuracy before any query

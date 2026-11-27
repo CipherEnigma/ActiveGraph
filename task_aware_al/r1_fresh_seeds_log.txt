@@ -1,0 +1,99 @@
+graph=locked feat=0.1 removal=random seeds=30 budget=200 labels=[0.15, 0.4] workers=7 combos=6
+  done 1/60  (72s)
+  done 2/60  (74s)
+  done 3/60  (78s)
+  done 4/60  (78s)
+  done 5/60  (78s)
+  done 6/60  (80s)
+  done 7/60  (80s)
+  done 8/60  (125s)
+  done 9/60  (133s)
+  done 10/60  (134s)
+  done 11/60  (134s)
+  done 12/60  (134s)
+  done 13/60  (134s)
+  done 14/60  (137s)
+  done 15/60  (175s)
+  done 16/60  (187s)
+  done 17/60  (187s)
+  done 18/60  (187s)
+  done 19/60  (192s)
+  done 20/60  (194s)
+  done 21/60  (195s)
+  done 22/60  (237s)
+  done 23/60  (241s)
+  done 24/60  (247s)
+  done 25/60  (247s)
+  done 26/60  (249s)
+  done 27/60  (253s)
+  done 28/60  (253s)
+  done 29/60  (289s)
+  done 30/60  (290s)
+  done 31/60  (290s)
+  done 32/60  (293s)
+  done 33/60  (294s)
+  done 34/60  (296s)
+  done 35/60  (304s)
+  done 36/60  (336s)
+  done 37/60  (336s)
+  done 38/60  (336s)
+  done 39/60  (337s)
+  done 40/60  (339s)
+  done 41/60  (339s)
+  done 42/60  (343s)
+  done 43/60  (367s)
+  done 44/60  (370s)
+  done 45/60  (373s)
+  done 46/60  (376s)
+  done 47/60  (376s)
+  done 48/60  (377s)
+  done 49/60  (381s)
+  done 50/60  (420s)
+  done 51/60  (420s)
+  done 52/60  (420s)
+  done 53/60  (429s)
+  done 54/60  (429s)
+  done 55/60  (429s)
+  done 56/60  (431s)
+  done 57/60  (477s)
+  done 58/60  (478s)
+  done 59/60  (480s)
+  done 60/60  (480s)
+
+######## labelled = 15%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.072, 0.033)
+start acc=0.433  ceiling (full graph)=0.902  start reach=0.13
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.002     +0.002     +0.007      0.01   0.19    7.9    0.9
+    common_nbrs/adaptive     +0.000     +0.020     +0.033      0.07   0.22   10.4    2.0
+         maxdeg/adaptive     +0.011     +0.027     +0.047      0.10   0.24    7.5    2.0
+            value/static     +0.042     +0.098     +0.156      0.33   0.52    8.4    0.5
+          value/adaptive     +0.067     +0.113     +0.209      0.45   0.68    7.5   26.2
+      value_all/adaptive     +0.060     +0.071     +0.087      0.18   0.39    7.2   27.9
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.024+-0.095 (p=0.170)  b=100: +0.016+-0.106 (p=0.428)  b=200: +0.053+-0.119*(p=0.021)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.064+-0.095*(p=0.001)  b=100: +0.111+-0.133*(p=0.000)  b=200: +0.202+-0.156*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.067+-0.094*(p=0.001)  b=100: +0.093+-0.137*(p=0.001)  b=200: +0.176+-0.159*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.056+-0.093*(p=0.003)  b=100: +0.087+-0.135*(p=0.001)  b=200: +0.162+-0.138*(p=0.000)
+  value_all/adaptive                             b=50: +0.007+-0.081 (p=0.655)  b=100: +0.042+-0.110*(p=0.044)  b=200: +0.122+-0.132*(p=0.000)
+-- static value minus static common_nbrs
+
+######## labelled = 40%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.101, 0.018)
+start acc=0.518  ceiling (full graph)=0.969  start reach=0.27
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.020     +0.018     +0.044      0.10   0.37    7.9    0.9
+    common_nbrs/adaptive     +0.002     +0.024     +0.060      0.13   0.41   10.4    2.1
+         maxdeg/adaptive     +0.016     +0.027     +0.031      0.07   0.33    7.5    2.0
+            value/static     +0.062     +0.122     +0.187      0.41   0.66    8.2    0.6
+          value/adaptive     +0.084     +0.136     +0.238      0.53   0.80    7.9   20.2
+      value_all/adaptive     +0.047     +0.073     +0.111      0.25   0.53    8.9   20.0
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.022+-0.071 (p=0.096)  b=100: +0.013+-0.104 (p=0.489)  b=200: +0.051+-0.094*(p=0.006)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.064+-0.062*(p=0.000)  b=100: +0.118+-0.092*(p=0.000)  b=200: +0.193+-0.131*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.082+-0.072*(p=0.000)  b=100: +0.111+-0.086*(p=0.000)  b=200: +0.178+-0.120*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.069+-0.071*(p=0.000)  b=100: +0.109+-0.098*(p=0.000)  b=200: +0.207+-0.128*(p=0.000)
+  value_all/adaptive                             b=50: +0.038+-0.085*(p=0.022)  b=100: +0.062+-0.094*(p=0.001)  b=200: +0.127+-0.113*(p=0.000)
+-- static value minus static common_nbrs
+
+* = paired t-test p < 0.05; gain = accuracy on targets minus accuracy before any query

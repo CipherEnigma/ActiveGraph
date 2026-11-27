@@ -1,0 +1,12 @@
+[   137s] seed 0 random done
+[   245s] seed 0 linkprob done
+[  1109s] seed 0 value done
+[  1109s] seed 1 random done
+[  1109s] seed 1 linkprob done
+[  1292s] seed 1 value done
+[  1292s] seed 2 random done
+[  1292s] seed 2 linkprob done
+[  2524s] seed 2 value done
+[  2524s] seed 0 __ceiling__ done
+[  2524s] seed 1 __ceiling__ done
+[  2524s] seed 2 __ceiling__ done

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EdgeQuery Framework Overview</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f8f8; display: flex; justify-content: center; align-items: flex-start; padding: 20px; }
+.diagram { width: 1100px; background: white; border: 1px solid #ccc; padding: 12px; font-size: 11px; line-height: 1.35; }
+.diagram-title { text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #222; }
+.top-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+.panel { border: 2px solid #888; }
+.panel-header { color: white; font-weight: bold; font-size: 11.5px; padding: 4px 8px; }
+.panel-body { padding: 7px 8px; background: #fefefe; font-size: 10.5px; min-height: 190px; }
+/* Panel colors */
+.p1 .panel-header { background: #1a4a8a; border-bottom: 2px solid #0d3060; }
+.p2 .panel-header { background: #1a7a3a; border-bottom: 2px solid #0f5528; }
+.p3 .panel-header { background: #5a2580; border-bottom: 2px solid #3e1a60; }
+.p4 .panel-header { background: #c04000; border-bottom: 2px solid #8a2e00; }
+.p5 .panel-header { background: #1a5878; border-bottom: 2px solid #103f58; }
+.p6 .panel-header { background: #7a2020; border-bottom: 2px solid #551515; }
+/* Arrow row */
+.arrow-row { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 6px; position: relative; height: 28px; }
+.arrow-label { font-size: 10px; color: #444; position: absolute; top: 50%; transform: translateY(-50%); white-space: nowrap; }
+svg.arrows { width: 100%; height: 28px; }
+.bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+/* Content elements */
+.sub-box { border: 1px solid #bbb; border-radius: 2px; padding: 4px 6px; margin: 4px 0; background: #f4f7ff; font-size: 10px; }
+.sub-box.green { background: #f0faf0; border-color: #aadaaa; }
+.sub-box.purple { background: #f8f0ff; border-color: #cc99ee; }
+.sub-box.orange { background: #fff6f0; border-color: #ffbb88; }
+.sub-box.red { background: #fff0f0; border-color: #ffaaaa; }
+.sub-box.gold { background: #fffbf0; border-color: #ddc060; }
+.math { font-family: 'Times New Roman', serif; font-style: italic; font-size: 11px; }
+.bold { font-weight: bold; }
+.indent { margin-left: 10px; }
+.bullet { margin-left: 6px; }
+.bullet::before { content: "• "; color: #555; }
+.arrow-right { color: #c04000; font-weight: bold; }
+ul { margin-left: 14px; }
+li { margin: 2px 0; }
+.tag { display: inline-block; background: #e8e0ff; border: 1px solid #a080cc; border-radius: 3px; padding: 1px 5px; font-size: 9.5px; font-weight: bold; color: #4a2070; margin: 1px 2px; }
+.tag.blue { background: #deeeff; border-color: #80aacc; color: #1a3a70; }
+.tag.green { background: #deffee; border-color: #80ccaa; color: #1a5030; }
+.tag.orange { background: #ffeedd; border-color: #cca080; color: #603010; }
+.metric { display: flex; align-items: flex-start; gap: 5px; margin: 4px 0; }
+.metric-icon { font-size: 14px; flex-shrink: 0; }
+.metric-text strong { display: block; font-size: 10px; }
+.metric-text span { font-size: 9.5px; color: #555; }
+/* loop arrow SVG */
+.loop-container { position: relative; height: 40px; }
+.loop-svg { width: 100%; height: 40px; }
+/* number badge */
+.num { display: inline-block; border: 2px solid currentColor; border-radius: 50%; width: 18px; height: 18px; text-align: center; line-height: 14px; font-size: 10px; font-weight: bold; margin-right: 4px; vertical-align: middle; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 6px; font-size: 9.5px; border-top: 1px solid #ddd; padding-top: 6px; color: #333; }
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #666; }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="diagram-title">EdgeQuery: Task-Aware Active Link Acquisition Framework</div>
+
+  <!-- TOP ROW: 4 panels -->
+  <div class="top-row">
+
+    <!-- Panel 1: Environment -->
+    <div class="panel p1">
+      <div class="panel-header"><span class="num" style="color:white">1</span> Environment / Network</div>
+      <div class="panel-body">
+        <div style="text-align:center; margin-bottom:6px;">
+          <!-- Tiny graph SVG -->
+          <svg width="120" height="80" style="display:block;margin:0 auto;">
+            <!-- edges: grey = hidden, black = observed -->
+            <line x1="30" y1="40" x2="60" y2="15" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="30" y1="40" x2="60" y2="65" stroke="#555" stroke-width="1.5"/>
+            <line x1="60" y1="15" x2="90" y2="40" stroke="#555" stroke-width="1.5"/>
+            <line x1="60" y1="65" x2="90" y2="40" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="60" y1="15" x2="60" y2="65" stroke="#555" stroke-width="1.5"/>
+            <line x1="90" y1="40" x2="110" y2="20" stroke="#ccc" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <!-- labelled nodes: blue -->
+            <circle cx="30" cy="40" r="8" fill="#3a7bd5" stroke="#1a4a8a" stroke-width="1.5"/>
+            <circle cx="60" cy="15" r="8" fill="#3a7bd5" stroke="#1a4a8a" stroke-width="1.5"/>
+            <!-- target nodes: orange star shape -->
+            <circle cx="60" cy="65" r="8" fill="#f08040" stroke="#c04000" stroke-width="1.5"/>
+            <circle cx="90" cy="40" r="8" fill="#f08040" stroke="#c04000" stroke-width="1.5"/>
+            <!-- unlabelled: grey -->
+            <circle cx="110" cy="20" r="7" fill="#aaa" stroke="#666" stroke-width="1.5"/>
+            <!-- Labels inside nodes -->
+            <text x="30" y="44" text-anchor="middle" fill="white" font-size="7" font-weight="bold">L</text>
+            <text x="60" y="19" text-anchor="middle" fill="white" font-size="7" font-weight="bold">L</text>
+            <text x="60" y="69" text-anchor="middle" fill="white" font-size="7" font-weight="bold">T</text>
+            <text x="90" y="44" text-anchor="middle" fill="white" font-size="7" font-weight="bold">T</text>
+            <text x="110" y="23" text-anchor="middle" fill="white" font-size="6.5" font-weight="bold">U</text>
+          </svg>
+        </div>
+        <b>Contextual SBM:</b><br>
+        <div class="bullet"><span class="math">n</span> = 90 nodes, <span class="math">k</span> = 3 classes</div>
+        <div class="bullet"><span class="math">p</span><sub>in</sub> = 0.13 &nbsp;|&nbsp; <span class="math">p</span><sub>out</sub> = 0.006</div>
+        <div class="bullet">~189 true edges per graph</div>
+        <div class="bullet">12-dim node attributes (weak)</div>
+        <br>
+        <b>Observation:</b><br>
+        <div class="bullet">Only 15% of true edges visible</div>
+        <div class="bullet">New graph per random seed</div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Input Representation -->
+    <div class="panel p2">
+      <div class="panel-header"><span class="num" style="color:white">2</span> Input Representation</div>
+      <div class="panel-body">
+        <div class="sub-box green">
+          <b>Observed Graph</b> <span class="math">G<sub>t</sub> = (V, E<sub>t</sub>)</span><br>
+          Adjacency matrix <span class="math">A<sub>t</sub></span> at query step <span class="math">t</span>
+        </div>
+        <div class="sub-box green">
+          <b>Labelled Set</b> <span class="math">L ⊂ V</span><br>
+          Known class labels <span class="math">y<sub>L</sub> ∈ {1…K}</span><br>
+          15% or 40% of nodes
+        </div>
+        <div class="sub-box green">
+          <b>Target Set</b> <span class="math">T ⊂ V\L</span><br>
+          15 unlabelled nodes to classify<br>
+          <i>Labels y<sub>T</sub> hidden from strategy</i>
+        </div>
+        <div class="sub-box green">
+          <b>Budget</b> <span class="math">B</span> = 200 queries<br>
+          <b>Candidates</b> <span class="math">C = </span>all unobserved pairs
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Query Strategy -->
+    <div class="panel p3">
+      <div class="panel-header"><span class="num" style="color:white">3</span> Query Strategy (Value Scorer)</div>
+      <div class="panel-body">
+        <b>For each candidate pair <span class="math">(i,j)</span>:</b>
+        <div class="sub-box purple" style="margin-top:5px;">
+          <b>Step 1</b> — Estimate link probability<br>
+          <span class="math">P̂(ij) = p̂<sub>in</sub> P<sub>same</sub> + p̂<sub>out</sub>(1−P<sub>same</sub>)</span><br>
+          <span style="color:#666;font-size:9.5px;">where <span class="math">P<sub>same</sub> = Σ<sub>c</sub> q<sub>i</sub>(c) q<sub>j</sub>(c)</span></span>
+        </div>
+        <div class="sub-box purple">
+          <b>Step 2</b> — Compute confidence gain<br>
+          Add edge tentatively → rerun LP<br>
+          <span class="math">ΔÂ<sub>T</sub> = Â<sub>T</sub>(A+e<sub>ij</sub>) − Â<sub>T</sub>(A)</span>
+        </div>
+        <div class="sub-box purple">
+          <b>Step 3</b> — Value score<br>
+          <span class="math" style="font-size:12px;">score(i,j) = P̂(ij) × ΔÂ<sub>T</sub></span>
+        </div>
+        <div style="margin-top:5px; font-size:9.5px; color:#444;">
+          ↳ Candidate list: top-100 by <span class="math">P̂ × |conf<sub>i</sub>−conf<sub>j</sub>|</span><br>
+          ↳ <b>Static</b>: score once, ask top-<span class="math">B</span><br>
+          ↳ <b>Adaptive</b>: re-score after each answer
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 4: Oracle & Update -->
+    <div class="panel p4">
+      <div class="panel-header"><span class="num" style="color:white">4</span> Oracle &amp; Graph Update</div>
+      <div class="panel-body">
+        <div style="text-align:center; margin: 8px 0;">
+          <svg width="140" height="60">
+            <rect x="5" y="18" width="50" height="24" rx="4" fill="#5a2580" stroke="#3e1a60" stroke-width="1.5"/>
+            <text x="30" y="34" text-anchor="middle" fill="white" font-size="9" font-weight="bold">Strategy</text>
+            <rect x="85" y="18" width="50" height="24" rx="4" fill="#c04000" stroke="#8a2e00" stroke-width="1.5"/>
+            <text x="110" y="34" text-anchor="middle" fill="white" font-size="9" font-weight="bold">Oracle</text>
+            <line x1="55" y1="30" x2="83" y2="30" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+            <text x="69" y="26" text-anchor="middle" fill="#333" font-size="8">(i,j)?</text>
+            <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#333"/></marker></defs>
+          </svg>
+        </div>
+        <div class="sub-box orange">
+          <b>Answer = 1</b> (edge exists):<br>
+          <span class="math">A<sub>t+1</sub> = A<sub>t</sub> + e<sub>ij</sub></span><br>
+          True link added to observed graph
+        </div>
+        <div class="sub-box orange">
+          <b>Answer = 0</b> (no edge):<br>
+          Pair removed from candidates<br>
+          Graph unchanged
+        </div>
+        <div style="margin-top:6px; text-align:center; font-size:9.5px; color:#666;">
+          Repeat for <span class="math">t = 1, 2, …, B</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end top-row -->
+
+  <!-- SIMULATION LOOP ARROW -->
+  <div style="position:relative; height:34px; margin-bottom:4px;">
+    <svg width="100%" height="34" style="display:block;">
+      <!-- Main left-to-right flow arrow across top panels -->
+      <defs>
+        <marker id="arr2" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L7,3.5 z" fill="#444"/>
+        </marker>
+        <marker id="arr3" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L7,3.5 z" fill="#c04000"/>
+        </marker>
+        <marker id="arr4" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L7,3.5 z" fill="#1a7a3a"/>
+        </marker>
+      </defs>
+      <!-- Simulation loop: bottom curve -->
+      <path d="M 820,5 Q 820,30 700,30 Q 450,30 280,30 Q 160,30 160,5"
+            fill="none" stroke="#c04000" stroke-width="2" stroke-dasharray="6,3"
+            marker-end="url(#arr3)"/>
+      <text x="490" y="28" text-anchor="middle" fill="#c04000" font-size="9" font-weight="bold">Simulation Loop: repeat until budget B exhausted</text>
+    </svg>
+  </div>
+
+  <!-- BOTTOM ROW: 2 panels -->
+  <div class="bottom-row">
+
+    <!-- Panel 5: Label Propagation -->
+    <div class="panel p5">
+      <div class="panel-header"><span class="num" style="color:white">5</span> Classifier: Label Propagation</div>
+      <div class="panel-body" style="min-height:auto;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div>
+            <b>Closed-Form Solution:</b>
+            <div class="sub-box" style="background:#eef4ff; margin-top:4px; font-size:10px;">
+              <span class="math">S = D<sup>−1</sup>A</span> &nbsp;(row-norm. adj.)<br><br>
+              <span class="math">F<sub>U</sub> = (I−αS<sub>UU</sub>)<sup>−1</sup> αS<sub>UL</sub>Y<sub>L</sub></span><br><br>
+              Damping <span class="math">α = 0.99</span><br>
+              Labelled rows: <span class="math">F<sub>L</sub> = Y<sub>L</sub></span>
+            </div>
+            <div class="sub-box" style="background:#eef4ff; margin-top:4px; font-size:10px;">
+              <b>Prediction:</b> <span class="math">ŷ<sub>u</sub> = argmax<sub>c</sub> F<sub>uc</sub></span><br>
+              <b>Confidence:</b> <span class="math">max<sub>c</sub> q<sub>u</sub>(c)</span><br>
+              <b>Unreached node</b> → prior guess
+            </div>
+          </div>
+          <div>
+            <b>Why Label Propagation?</b>
+            <ul style="margin-top:4px; font-size:9.5px; margin-left:14px;">
+              <li>Exact closed form → no retraining needed</li>
+              <li>Effect of any candidate edge computable in O(n²)</li>
+              <li>Enables scoring all candidates per query</li>
+              <li>Interpretable belief vectors over classes</li>
+            </ul>
+            <div class="sub-box" style="margin-top:6px; background:#eef4ff; font-size:9.5px;">
+              <b>Estimated confidence on targets:</b><br>
+              <span class="math">Â<sub>T</sub>(A) = (1/|T|) Σ<sub>u∈T</sub> max<sub>c</sub> q<sub>u</sub>(c)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 6: Evaluation Metrics -->
+    <div class="panel p6">
+      <div class="panel-header"><span class="num" style="color:white">6</span> Evaluation Metrics (Post-Query)</div>
+      <div class="panel-body" style="min-height:auto;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div>
+            <div class="metric">
+              <div class="metric-icon">📈</div>
+              <div class="metric-text">
+                <strong>Accuracy Gain</strong>
+                <span class="math">Acc<sub>T</sub>(B) − Acc<sub>T</sub>(0)</span><br>
+                <span>Improvement on target nodes</span>
+              </div>
+            </div>
+            <div class="metric" style="margin-top:8px;">
+              <div class="metric-icon">🎯</div>
+              <div class="metric-text">
+                <strong>Gap Closed</strong>
+                <span class="math">(Acc<sub>T</sub>(B)−Acc<sub>T</sub>(0)) / (Acc<sub>T</sub><sup>full</sup>−Acc<sub>T</sub>(0))</span><br>
+                <span>Fraction of achievable gain recovered</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="metric">
+              <div class="metric-icon">🔗</div>
+              <div class="metric-text">
+                <strong>Reach</strong>
+                <span>|{u∈T: u connected to L}| / |T|</span><br>
+                <span>Fraction of targets with label path</span>
+              </div>
+            </div>
+            <div class="metric" style="margin-top:8px;">
+              <div class="metric-icon">✓</div>
+              <div class="metric-text">
+                <strong>True Edges Found</strong>
+                <span>|{queried (i,j) : A*(i,j)=1}|</span><br>
+                <span>Link recovery rate (not the goal!)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid #ddd; margin-top:8px; padding-top:6px; font-size:9.5px; color:#555;">
+          <b>Statistics:</b> 30 seeds × paired t-test × bootstrap CI × Holm correction &nbsp;|&nbsp; Replicated on 30 held-out seeds (100–129)
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end bottom-row -->
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="background:#3a7bd5;border-color:#1a4a8a;"></div> L: Labelled node</div>
+    <div class="legend-item"><div class="leg-dot" style="background:#f08040;border-color:#c04000;"></div> T: Target node (label unknown to strategy)</div>
+    <div class="legend-item"><div class="leg-dot" style="background:#aaa;border-color:#666;"></div> U: Unlabelled node</div>
+    <div class="legend-item"><svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#555" stroke-width="1.5"/></svg> Observed edge</div>
+    <div class="legend-item"><svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#aaa" stroke-width="1.5" stroke-dasharray="4,3"/></svg> Hidden edge</div>
+    <div class="legend-item"><span class="math">n</span>=90, <span class="math">k</span>=3, <span class="math">|L|</span>∈{13,36}, <span class="math">|T|</span>=15, <span class="math">B</span>=200</div>
+  </div>
+
+</div>
+</body>
+</html>

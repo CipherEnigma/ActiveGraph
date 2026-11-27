@@ -1,0 +1,139 @@
+graph=locked feat=0.1 seeds=30 budget=200 labels=[0.15, 0.4] workers=7 combos=17
+  done 1/60  (153s)
+  done 2/60  (159s)
+  done 3/60  (159s)
+  done 4/60  (159s)
+  done 5/60  (159s)
+  done 6/60  (159s)
+  done 7/60  (159s)
+  done 8/60  (256s)
+  done 9/60  (260s)
+  done 10/60  (260s)
+  done 11/60  (262s)
+  done 12/60  (265s)
+  done 13/60  (267s)
+  done 14/60  (267s)
+  done 15/60  (459s)
+  done 16/60  (472s)
+  done 17/60  (487s)
+  done 18/60  (487s)
+  done 19/60  (487s)
+  done 20/60  (501s)
+  done 21/60  (501s)
+  done 22/60  (614s)
+  done 23/60  (614s)
+  done 24/60  (626s)
+  done 25/60  (627s)
+  done 26/60  (649s)
+  done 27/60  (649s)
+  done 28/60  (667s)
+  done 29/60  (737s)
+  done 30/60  (747s)
+  done 31/60  (747s)
+  done 32/60  (771s)
+  done 33/60  (771s)
+  done 34/60  (778s)
+  done 35/60  (778s)
+  done 36/60  (822s)
+  done 37/60  (822s)
+  done 38/60  (823s)
+  done 39/60  (827s)
+  done 40/60  (836s)
+  done 41/60  (840s)
+  done 42/60  (841s)
+  done 43/60  (879s)
+  done 44/60  (880s)
+  done 45/60  (881s)
+  done 46/60  (886s)
+  done 47/60  (894s)
+  done 48/60  (899s)
+  done 49/60  (900s)
+  done 50/60  (948s)
+  done 51/60  (948s)
+  done 52/60  (948s)
+  done 53/60  (948s)
+  done 54/60  (957s)
+  done 55/60  (967s)
+  done 56/60  (970s)
+  done 57/60  (1020s)
+  done 58/60  (1025s)
+  done 59/60  (1027s)
+  done 60/60  (1028s)
+
+######## labelled = 15%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.084, 0.027)
+start acc=0.482  ceiling (full graph)=0.920  start reach=0.17
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.009     +0.009     +0.013      0.03   0.22    6.8    2.4
+      common_nbrs/static     +0.009     +0.013     +0.036      0.08   0.24    8.5    0.5
+    common_nbrs/adaptive     +0.002     +0.013     +0.031      0.07   0.24    9.9    4.0
+      adamic_adar/static     +0.009     +0.013     +0.036      0.08   0.24    8.5    0.5
+    adamic_adar/adaptive     +0.004     +0.018     +0.029      0.07   0.24   10.1    4.5
+           maxdeg/static     +0.009     +0.004     +0.027      0.06   0.27    7.1    0.4
+         maxdeg/adaptive     +0.016     +0.024     +0.038      0.09   0.28    7.3    5.0
+         pagerank/static     +0.022     +0.018     +0.011      0.03   0.28    7.2    0.4
+       pagerank/adaptive     +0.016     +0.002     +0.016      0.04   0.30    7.3    8.1
+      uncertainty/static     +0.000     +0.000     +0.000      0.00   0.17    7.9    0.3
+    uncertainty/adaptive     +0.000     +0.000     +0.000      0.00   0.17    8.1    3.9
+            value/static     +0.071     +0.111     +0.182      0.42   0.52    8.6    1.4
+          value/adaptive     +0.082     +0.133     +0.227      0.52   0.70    7.9   42.3
+        value_all/static     +0.029     +0.051     +0.084      0.19   0.34    8.0    2.2
+      value_all/adaptive     +0.029     +0.060     +0.100      0.23   0.40    6.8   28.6
+     value_knownp/static     +0.071     +0.111     +0.182      0.42   0.52    8.6    0.9
+   value_knownp/adaptive     +0.082     +0.133     +0.227      0.52   0.70    7.9   36.5
+-- active learning: adaptive minus static (same strategy)
+  common_nbrs                                    b=50: -0.007+-0.044 (p=0.415)  b=100: +0.000+-0.061 (p=1.000)  b=200: -0.004+-0.078 (p=0.758)
+  adamic_adar                                    b=50: -0.004+-0.046 (p=0.601)  b=100: +0.004+-0.063 (p=0.702)  b=200: -0.007+-0.083 (p=0.662)
+  uncertainty                                    b=50: +0.000+-0.000 (p=1.000)  b=100: +0.000+-0.000 (p=1.000)  b=200: +0.000+-0.000 (p=1.000)
+  value                                          b=50: +0.011+-0.080 (p=0.455)  b=100: +0.022+-0.108 (p=0.271)  b=200: +0.044+-0.144 (p=0.101)
+  value_all                                      b=50: +0.000+-0.043 (p=1.000)  b=100: +0.009+-0.067 (p=0.475)  b=200: +0.016+-0.100 (p=0.402)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.073+-0.093*(p=0.000)  b=100: +0.124+-0.117*(p=0.000)  b=200: +0.213+-0.158*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.080+-0.095*(p=0.000)  b=100: +0.120+-0.128*(p=0.000)  b=200: +0.196+-0.173*(p=0.000)
+  adamic_adar/adaptive                           b=50: +0.078+-0.098*(p=0.000)  b=100: +0.116+-0.129*(p=0.000)  b=200: +0.198+-0.182*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.067+-0.097*(p=0.001)  b=100: +0.109+-0.111*(p=0.000)  b=200: +0.189+-0.149*(p=0.000)
+  pagerank/adaptive                              b=50: +0.067+-0.097*(p=0.001)  b=100: +0.131+-0.107*(p=0.000)  b=200: +0.211+-0.139*(p=0.000)
+  uncertainty/adaptive                           b=50: +0.082+-0.092*(p=0.000)  b=100: +0.133+-0.117*(p=0.000)  b=200: +0.227+-0.167*(p=0.000)
+  value_all/adaptive                             b=50: +0.053+-0.083*(p=0.001)  b=100: +0.073+-0.122*(p=0.003)  b=200: +0.127+-0.172*(p=0.000)
+  value_knownp/adaptive                          b=50: +0.000+-0.000 (p=1.000)  b=100: +0.000+-0.000 (p=1.000)  b=200: +0.000+-0.000 (p=1.000)
+-- static value minus static common_nbrs
+  value/static - common_nbrs/static              b=50: +0.062+-0.091*(p=0.001)  b=100: +0.098+-0.109*(p=0.000)  b=200: +0.147+-0.131*(p=0.000)
+
+######## labelled = 40%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.111, 0.014)
+start acc=0.549  ceiling (full graph)=0.962  start reach=0.32
+           strategy/mode    gain@50   gain@100   gain@200 gapclosed  reach  edges    sec
+         random/adaptive     +0.007     +0.018     +0.040      0.10   0.37    6.8    2.1
+      common_nbrs/static     +0.004     +0.018     +0.040      0.10   0.41    8.5    0.5
+    common_nbrs/adaptive     +0.009     +0.022     +0.049      0.12   0.40    9.9    2.5
+      adamic_adar/static     +0.004     +0.018     +0.040      0.10   0.41    8.5    0.2
+    adamic_adar/adaptive     +0.007     +0.022     +0.051      0.12   0.41   10.1    2.1
+           maxdeg/static     +0.009     +0.018     +0.031      0.08   0.39    7.1    0.2
+         maxdeg/adaptive     +0.011     +0.018     +0.036      0.09   0.39    7.3    2.4
+         pagerank/static     +0.011     +0.020     +0.033      0.08   0.39    7.2    0.2
+       pagerank/adaptive     +0.013     +0.022     +0.038      0.09   0.40    7.3    2.8
+      uncertainty/static     +0.000     +0.000     +0.000      0.00   0.32    7.8    0.2
+    uncertainty/adaptive     +0.000     +0.000     +0.000      0.00   0.32    9.4    2.2
+            value/static     +0.053     +0.096     +0.164      0.40   0.65    7.5    0.7
+          value/adaptive     +0.071     +0.138     +0.242      0.59   0.84    9.4   19.1
+        value_all/static     +0.013     +0.031     +0.069      0.17   0.46    8.0    0.7
+      value_all/adaptive     +0.047     +0.076     +0.113      0.27   0.54    8.0   21.0
+     value_knownp/static     +0.053     +0.096     +0.164      0.40   0.65    7.5    0.5
+   value_knownp/adaptive     +0.071     +0.138     +0.249      0.60   0.84    9.4   19.1
+-- active learning: adaptive minus static (same strategy)
+  common_nbrs                                    b=50: +0.004+-0.035 (p=0.489)  b=100: +0.004+-0.043 (p=0.573)  b=200: +0.009+-0.080 (p=0.546)
+  adamic_adar                                    b=50: +0.002+-0.033 (p=0.712)  b=100: +0.004+-0.049 (p=0.625)  b=200: +0.011+-0.084 (p=0.475)
+  uncertainty                                    b=50: +0.000+-0.000 (p=1.000)  b=100: +0.000+-0.000 (p=1.000)  b=200: +0.000+-0.000 (p=1.000)
+  value                                          b=50: +0.018+-0.065 (p=0.147)  b=100: +0.042+-0.103*(p=0.032)  b=200: +0.078+-0.104*(p=0.000)
+  value_all                                      b=50: +0.033+-0.060*(p=0.005)  b=100: +0.044+-0.066*(p=0.001)  b=200: +0.044+-0.096*(p=0.017)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.064+-0.079*(p=0.000)  b=100: +0.120+-0.107*(p=0.000)  b=200: +0.202+-0.118*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.062+-0.076*(p=0.000)  b=100: +0.116+-0.097*(p=0.000)  b=200: +0.193+-0.108*(p=0.000)
+  adamic_adar/adaptive                           b=50: +0.064+-0.077*(p=0.000)  b=100: +0.116+-0.097*(p=0.000)  b=200: +0.191+-0.120*(p=0.000)
+  maxdeg/adaptive                                b=50: +0.060+-0.083*(p=0.000)  b=100: +0.120+-0.113*(p=0.000)  b=200: +0.207+-0.103*(p=0.000)
+  pagerank/adaptive                              b=50: +0.058+-0.083*(p=0.001)  b=100: +0.116+-0.117*(p=0.000)  b=200: +0.204+-0.115*(p=0.000)
+  uncertainty/adaptive                           b=50: +0.071+-0.076*(p=0.000)  b=100: +0.138+-0.108*(p=0.000)  b=200: +0.242+-0.110*(p=0.000)
+  value_all/adaptive                             b=50: +0.024+-0.092 (p=0.155)  b=100: +0.062+-0.121*(p=0.009)  b=200: +0.129+-0.124*(p=0.000)
+  value_knownp/adaptive                          b=50: +0.000+-0.000 (p=1.000)  b=100: +0.000+-0.018 (p=1.000)  b=200: -0.007+-0.027 (p=0.184)
+-- static value minus static common_nbrs
+  value/static - common_nbrs/static              b=50: +0.049+-0.055*(p=0.000)  b=100: +0.078+-0.086*(p=0.000)  b=200: +0.124+-0.099*(p=0.000)
+
+* = paired t-test p < 0.05; gain = accuracy on targets minus accuracy before any query

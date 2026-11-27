@@ -1,0 +1,91 @@
+graph=locked feat=0.1 seeds=30 budget=400 labels=[0.15, 0.4] workers=7 combos=4
+  done 1/60  (69s)
+  done 2/60  (69s)
+  done 3/60  (69s)
+  done 4/60  (69s)
+  done 5/60  (69s)
+  done 6/60  (69s)
+  done 7/60  (69s)
+  done 8/60  (102s)
+  done 9/60  (106s)
+  done 10/60  (109s)
+  done 11/60  (110s)
+  done 12/60  (111s)
+  done 13/60  (112s)
+  done 14/60  (112s)
+  done 15/60  (148s)
+  done 16/60  (151s)
+  done 17/60  (153s)
+  done 18/60  (153s)
+  done 19/60  (154s)
+  done 20/60  (156s)
+  done 21/60  (157s)
+  done 22/60  (204s)
+  done 23/60  (204s)
+  done 24/60  (207s)
+  done 25/60  (207s)
+  done 26/60  (207s)
+  done 27/60  (215s)
+  done 28/60  (219s)
+  done 29/60  (271s)
+  done 30/60  (271s)
+  done 31/60  (271s)
+  done 32/60  (271s)
+  done 33/60  (271s)
+  done 34/60  (271s)
+  done 35/60  (274s)
+  done 36/60  (303s)
+  done 37/60  (304s)
+  done 38/60  (306s)
+  done 39/60  (306s)
+  done 40/60  (309s)
+  done 41/60  (312s)
+  done 42/60  (312s)
+  done 43/60  (350s)
+  done 44/60  (350s)
+  done 45/60  (353s)
+  done 46/60  (353s)
+  done 47/60  (358s)
+  done 48/60  (361s)
+  done 49/60  (361s)
+  done 50/60  (28807s)
+  done 51/60  (28812s)
+  done 52/60  (28812s)
+  done 53/60  (28812s)
+  done 54/60  (28812s)
+  done 55/60  (28812s)
+  done 56/60  (28812s)
+  done 57/60  (28827s)
+  done 58/60  (28829s)
+  done 59/60  (28830s)
+  done 60/60  (28830s)
+
+######## labelled = 15%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.084, 0.027)
+start acc=0.482  ceiling (full graph)=0.920  start reach=0.17
+           strategy/mode    gain@50   gain@100   gain@200   gain@400 gapclosed  reach  edges    sec
+         random/adaptive     +0.009     +0.009     +0.013     +0.062      0.14   0.33   14.8    1.4
+    common_nbrs/adaptive     +0.002     +0.013     +0.031     +0.064      0.15   0.32   19.3    3.4
+            value/static     +0.078     +0.116     +0.187     +0.267      0.61   0.71   17.4    0.8
+          value/adaptive     +0.082     +0.133     +0.227     +0.298      0.68   0.90   22.5   46.3
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.004+-0.078 (p=0.758)  b=100: +0.018+-0.116 (p=0.408)  b=200: +0.040+-0.128 (p=0.098)  b=400: +0.031+-0.143 (p=0.243)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.073+-0.093*(p=0.000)  b=100: +0.124+-0.117*(p=0.000)  b=200: +0.213+-0.158*(p=0.000)  b=400: +0.236+-0.170*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.080+-0.095*(p=0.000)  b=100: +0.120+-0.128*(p=0.000)  b=200: +0.196+-0.173*(p=0.000)  b=400: +0.233+-0.172*(p=0.000)
+-- static value minus static common_nbrs
+
+######## labelled = 40%   targets=15   p_true=(0.13, 0.006)  p_est mean=(0.111, 0.014)
+start acc=0.549  ceiling (full graph)=0.962  start reach=0.32
+           strategy/mode    gain@50   gain@100   gain@200   gain@400 gapclosed  reach  edges    sec
+         random/adaptive     +0.007     +0.018     +0.040     +0.076      0.18   0.46   14.8 1895.5
+    common_nbrs/adaptive     +0.009     +0.022     +0.049     +0.084      0.20   0.49   19.3  951.1
+            value/static     +0.044     +0.091     +0.131     +0.240      0.58   0.81   15.5    1.0
+          value/adaptive     +0.071     +0.138     +0.242     +0.307      0.74   0.96   26.6 3824.0
+-- active learning: adaptive minus static (same strategy)
+  value                                          b=50: +0.027+-0.060*(p=0.021)  b=100: +0.047+-0.077*(p=0.002)  b=200: +0.111+-0.098*(p=0.000)  b=400: +0.067+-0.124*(p=0.006)
+-- task-aware: value (adaptive) minus ...
+  random/adaptive                                b=50: +0.064+-0.079*(p=0.000)  b=100: +0.120+-0.107*(p=0.000)  b=200: +0.202+-0.118*(p=0.000)  b=400: +0.231+-0.116*(p=0.000)
+  common_nbrs/adaptive                           b=50: +0.062+-0.076*(p=0.000)  b=100: +0.116+-0.097*(p=0.000)  b=200: +0.193+-0.108*(p=0.000)  b=400: +0.222+-0.103*(p=0.000)
+-- static value minus static common_nbrs
+
+* = paired t-test p < 0.05; gain = accuracy on targets minus accuracy before any query
